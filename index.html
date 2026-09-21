@@ -1,0 +1,1295 @@
+<title>The Lutetium-177 Reel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+
+  --mat:#CFCCC1;
+  --mat-2:#C3C0B4;
+  --paper-1:#F2EFE6;
+  --paper-2:#E2DDCE;
+  --paper-3:#D2CCBA;
+  --ink:#22303A;
+  --ink-soft:#66757F;
+  --hair:#B9B4A6;
+
+  --tumor:#9A4C6E;
+  --tumor-soft:#C58FA6;
+  --receptor:#16786B;
+  --lu:#C87C16;
+  --beta:#E8B02B;
+  --ga:#4E5BB5;
+  --tissue:#9FAF96;
+  --alert:#B4402C;
+
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
+  --shadow:0 2px 0 rgba(34,48,58,.07), 0 10px 22px -12px rgba(34,48,58,.45);
+  --shadow-sm:0 1px 0 rgba(34,48,58,.08), 0 5px 12px -8px rgba(34,48,58,.5);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --mat:#161E25; --mat-2:#101820;
+    --paper-1:#26333D; --paper-2:#1E2A33; --paper-3:#18232B;
+    --ink:#EAE6DA; --ink-soft:#9BAAB4; --hair:#3A4854;
+    --tumor:#D38BA8; --tumor-soft:#7E4159;
+    --receptor:#4FC0AD; --lu:#F0A63E; --beta:#F7CE5C;
+    --ga:#8D97E8; --tissue:#A9BC9E; --alert:#E4785F;
+    --shadow:0 2px 0 rgba(0,0,0,.25), 0 12px 26px -14px rgba(0,0,0,.9);
+    --shadow-sm:0 1px 0 rgba(0,0,0,.3), 0 6px 14px -9px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --mat:#161E25; --mat-2:#101820;
+  --paper-1:#26333D; --paper-2:#1E2A33; --paper-3:#18232B;
+  --ink:#EAE6DA; --ink-soft:#9BAAB4; --hair:#3A4854;
+  --tumor:#D38BA8; --tumor-soft:#7E4159;
+  --receptor:#4FC0AD; --lu:#F0A63E; --beta:#F7CE5C;
+  --ga:#8D97E8; --tissue:#A9BC9E; --alert:#E4785F;
+  --shadow:0 2px 0 rgba(0,0,0,.25), 0 12px 26px -14px rgba(0,0,0,.9);
+  --shadow-sm:0 1px 0 rgba(0,0,0,.3), 0 6px 14px -9px rgba(0,0,0,.9);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--mat);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:16px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:"";position:fixed;inset:0;background-image:var(--grain);
+  opacity:.38;mix-blend-mode:multiply;pointer-events:none;z-index:99;
+}
+.wrap{max-width:860px;margin:0 auto;padding-inline:18px;padding-block:34px 60px}
+
+/* ---------- masthead ---------- */
+.masthead{display:flex;flex-direction:column;gap:12px;margin-bottom:26px}
+.kicker{
+  font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink-soft);
+}
+h1{
+  font-family:var(--display);font-weight:800;font-size:clamp(30px,6.4vw,50px);
+  line-height:1.02;letter-spacing:-.022em;margin:0;text-wrap:balance;
+}
+h1 em{font-style:normal;color:var(--lu)}
+.standfirst{margin:0;max-width:60ch;font-size:17px;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:2px}
+.chip{
+  font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.05em;
+  padding:4px 9px;background:var(--paper-2);color:var(--ink);
+  border:1px solid var(--hair);border-radius:2px;box-shadow:var(--shadow-sm);
+}
+.chip.warn{background:transparent;border-style:dashed;color:var(--ink-soft)}
+
+/* ---------- player ---------- */
+.player{
+  background:var(--paper-1);border:1px solid var(--hair);border-radius:3px;
+  box-shadow:var(--shadow);overflow:hidden;
+}
+.stage{position:relative}
+.sc{display:none;margin:0}
+.sc.is-active{display:block}
+.svg-hold{overflow-x:auto;background:var(--paper-2);border-bottom:1px solid var(--hair)}
+.svg-hold svg{display:block;width:100%;min-width:500px;height:auto}
+.pan-hint{display:none;font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);letter-spacing:.04em}
+@media (max-width:560px){.pan-hint{display:inline}}
+.stage-tag{
+  position:absolute;top:10px;right:12px;font-family:var(--mono);font-size:10.5px;
+  font-weight:600;letter-spacing:.1em;color:var(--ink-soft);
+  background:var(--paper-1);border:1px solid var(--hair);padding:2px 7px;border-radius:2px;
+}
+.narration{padding:18px 20px 17px;min-height:152px;border-bottom:1px solid var(--hair)}
+.narration h2{
+  font-family:var(--display);font-weight:700;font-size:19px;letter-spacing:-.01em;
+  margin:0 0 6px;text-wrap:balance;
+}
+.narration p{margin:0;font-size:15.5px;line-height:1.66;max-width:64ch;color:var(--ink)}
+
+/* transport */
+.transport{display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--paper-1);flex-wrap:wrap}
+.btn{
+  font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.04em;
+  background:var(--paper-2);color:var(--ink);border:1px solid var(--hair);
+  border-radius:2px;padding:7px 11px;cursor:pointer;box-shadow:var(--shadow-sm);
+  display:inline-flex;align-items:center;gap:6px;
+}
+.btn:hover{background:var(--paper-3)}
+.btn:focus-visible{outline:2.5px solid var(--lu);outline-offset:2px}
+.btn.primary{background:var(--ink);color:var(--paper-1);border-color:var(--ink)}
+.btn.primary:hover{opacity:.88;background:var(--ink)}
+.btn svg{display:block}
+.rail{flex:1 1 180px;min-width:140px;height:8px;background:var(--paper-3);border:1px solid var(--hair);border-radius:2px;position:relative;overflow:hidden}
+.rail-fill{position:absolute;inset:0 auto 0 0;width:0%;background:var(--lu)}
+.clock{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* chapter tabs */
+.chapters{display:flex;flex-wrap:wrap;gap:6px;padding:12px 14px 14px;background:var(--paper-2);border-top:1px solid var(--hair)}
+.tab{
+  font-family:var(--mono);font-size:11px;font-weight:500;background:var(--paper-1);
+  color:var(--ink-soft);border:1px solid var(--hair);border-radius:2px;
+  padding:5px 9px;cursor:pointer;text-align:left;box-shadow:var(--shadow-sm);
+}
+.tab b{font-weight:600;color:var(--ink);margin-right:5px;font-variant-numeric:tabular-nums}
+.tab:hover{background:var(--paper-3)}
+.tab[aria-current="true"]{background:var(--ink);color:var(--paper-1);border-color:var(--ink)}
+.tab[aria-current="true"] b{color:var(--beta)}
+.tab:focus-visible{outline:2.5px solid var(--lu);outline-offset:2px}
+
+/* ---------- notes ---------- */
+.notes{margin-top:46px;display:flex;flex-direction:column;gap:34px}
+.note h3{
+  font-family:var(--display);font-weight:700;font-size:13px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-soft);margin:0 0 14px;
+  padding-bottom:7px;border-bottom:1.5px solid var(--hair);
+}
+.note p{margin:0 0 12px;max-width:66ch}
+.tbl{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12.5px}
+.tbl-scroll{overflow-x:auto}
+.tbl th{
+  text-align:left;font-weight:600;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-soft);padding:0 12px 7px 0;border-bottom:1.5px solid var(--hair);white-space:nowrap;
+}
+.tbl td{padding:8px 12px 8px 0;border-bottom:1px solid var(--hair);vertical-align:top}
+.tbl td:first-child{color:var(--ink);font-weight:500}
+.tbl td:last-child{padding-right:0}
+.tbl .num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl tr:last-child td{border-bottom:none}
+.deck{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px}
+.card{background:var(--paper-1);border:1px solid var(--hair);border-radius:3px;padding:14px 15px;box-shadow:var(--shadow-sm)}
+.card h4{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 8px}
+.card p{font-size:14.5px;margin:0;line-height:1.55}
+.card .big{font-family:var(--mono);font-weight:600;font-size:25px;color:var(--ink);display:block;line-height:1.1;margin-bottom:5px;font-variant-numeric:tabular-nums}
+.gloss{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:14.5px}
+.gloss dt{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--ink);padding-top:3px}
+.gloss dd{margin:0;color:var(--ink)}
+@media (max-width:520px){.gloss{grid-template-columns:1fr;gap:1px 0}.gloss dd{margin-bottom:11px}}
+.src{font-size:13.5px;color:var(--ink-soft);margin:0}
+.src a{color:var(--ink);text-decoration-thickness:1px;text-underline-offset:2px}
+.disclaimer{
+  margin-top:40px;padding:15px 17px;background:var(--paper-2);border:1px dashed var(--hair);
+  border-radius:3px;font-size:14px;color:var(--ink-soft);max-width:none;
+}
+.disclaimer strong{color:var(--ink);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:5px}
+
+/* ---------- SVG paint utilities ---------- */
+.f1{fill:var(--paper-1)}.f2{fill:var(--paper-2)}.f3{fill:var(--paper-3)}
+.fi{fill:var(--ink)}.fs{fill:var(--ink-soft)}.fn{fill:none}
+.ft{fill:var(--tumor)}.fts{fill:var(--tumor-soft)}.fr{fill:var(--receptor)}
+.fl{fill:var(--lu)}.fb{fill:var(--beta)}.fg{fill:var(--ga)}.fv{fill:var(--tissue)}
+.fa{fill:var(--alert)}.fmat{fill:var(--mat)}
+.si{stroke:var(--ink)}.ss{stroke:var(--ink-soft)}.sh{stroke:var(--hair)}
+.st{stroke:var(--tumor)}.sr{stroke:var(--receptor)}.sl{stroke:var(--lu)}
+.sb{stroke:var(--beta)}.sg{stroke:var(--ga)}.sv{stroke:var(--tissue)}.sa{stroke:var(--alert)}
+.w1{stroke-width:1.4}.w2{stroke-width:2.4}.w3{stroke-width:4}
+.dash{stroke-dasharray:6 5}.dash2{stroke-dasharray:2 4}
+.rc{stroke-linecap:round}.rj{stroke-linejoin:round}
+.cut{filter:url(#cut)}
+.t-h{font-family:var(--display);font-weight:700;font-size:22px;fill:var(--ink);letter-spacing:-.01em}
+.t-d{font-family:var(--display);font-weight:800;font-size:40px;fill:var(--ink);letter-spacing:-.02em}
+.t-l{font-family:var(--mono);font-weight:600;font-size:13px;fill:var(--ink);letter-spacing:.03em}
+.t-m{font-family:var(--mono);font-weight:400;font-size:12.5px;fill:var(--ink-soft)}
+.t-n{font-family:var(--mono);font-weight:600;font-size:24px;fill:var(--ink)}
+.t-k{font-family:var(--mono);font-weight:600;font-size:10.5px;fill:var(--ink-soft);letter-spacing:.14em}
+.mid{text-anchor:middle}.end{text-anchor:end}
+
+/* ---------- animation ---------- */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-12px)}}
+@keyframes fadeIn{from{opacity:0}}
+@keyframes popIn{from{opacity:0;transform:scale(.78)}}
+@keyframes slideL{from{opacity:0;transform:translateX(-26px)}}
+@keyframes slideR{from{opacity:0;transform:translateX(26px)}}
+@keyframes draw{from{stroke-dashoffset:var(--len,300)}}
+@keyframes throb{0%,100%{opacity:.35;transform:scale(.9)}50%{opacity:1;transform:scale(1.12)}}
+@keyframes blip{0%,100%{opacity:.25}50%{opacity:1}}
+@keyframes drift{from{transform:translate(0,0)}to{transform:translate(var(--dx,60px),var(--dy,0px))}}
+@keyframes spill{0%{opacity:0;transform:scale(.2)}25%{opacity:1}100%{opacity:0;transform:scale(2.6)}}
+@keyframes jitter{0%,100%{transform:translate(0,0)}33%{transform:translate(1.5px,-1.5px)}66%{transform:translate(-1.5px,1px)}}
+
+.a{animation-duration:.72s;animation-fill-mode:backwards;animation-timing-function:cubic-bezier(.2,.82,.25,1)}
+.a-up{animation-name:fadeUp}.a-dn{animation-name:fadeDown}.a-in{animation-name:fadeIn}
+.a-pop{animation-name:popIn}.a-l{animation-name:slideL}.a-r{animation-name:slideR}
+.a-draw{animation-name:draw;animation-timing-function:ease-in-out}
+.a-pop,.a-up,.a-dn,.a-l,.a-r,.a-throb,.a-drift,.a-spill,.a-jit{transform-box:fill-box;transform-origin:center}
+.a-throb{animation:throb 1.9s ease-in-out infinite}
+.a-blip{animation:blip 1.5s ease-in-out infinite}
+.a-jit{animation:jitter .9s steps(3,end) infinite}
+.a-drift{animation:drift 2.6s cubic-bezier(.4,0,.6,1) infinite alternate}
+.a-spill{animation:spill 1.8s ease-out infinite}
+.d1{animation-delay:.3s}.d2{animation-delay:.6s}.d3{animation-delay:.9s}
+.d4{animation-delay:1.25s}.d5{animation-delay:1.6s}.d6{animation-delay:1.95s}
+.d7{animation-delay:2.3s}.d8{animation-delay:2.7s}.d9{animation-delay:3.1s}
+.d10{animation-delay:3.5s}.d11{animation-delay:3.9s}.d12{animation-delay:4.35s}
+.d13{animation-delay:4.8s}.d14{animation-delay:5.25s}.d15{animation-delay:5.7s}
+.s1{animation-delay:-.4s}.s2{animation-delay:-.9s}.s3{animation-delay:-1.4s}.s4{animation-delay:-1.9s}
+
+.stage.paused .sc.is-active *{animation-play-state:paused}
+@media (prefers-reduced-motion: reduce){
+  .sc *{animation:none!important}
+}
+</style>
+
+<svg class="defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;left:-9999px">
+  <defs>
+    <filter id="cut" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3.2" flood-color="#0E1A22" flood-opacity="0.26"/>
+    </filter>
+    <marker id="ar" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 .6 L9.4 5 L0 9.4 Z" class="fi"/></marker>
+    <marker id="ar-s" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 .6 L9.4 5 L0 9.4 Z" class="fs"/></marker>
+    <marker id="ar-l" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 .6 L9.4 5 L0 9.4 Z" class="fl"/></marker>
+    <marker id="ar-b" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 .6 L9.4 5 L0 9.4 Z" class="fb"/></marker>
+    <marker id="ar-g" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 .6 L9.4 5 L0 9.4 Z" class="fg"/></marker>
+    <marker id="ar-r" viewBox="0 0 10 10" refX="8.6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 .6 L9.4 5 L0 9.4 Z" class="fr"/></marker>
+    <g id="recep"><path d="M-7 -9 L-5 0 A5.6 5.6 0 0 0 5 0 L7 -9" class="fn sr w2 rj rc"/></g>
+    <g id="recep-lit"><path d="M-7 -9 L-5 0 A5.6 5.6 0 0 0 5 0 L7 -9" class="fn sr w2 rj rc"/><circle cx="0" cy="-3" r="2.6" class="fr"/></g>
+    <g id="beta-dart"><path d="M0 -7 L3.4 3 L0 .6 L-3.4 3 Z" class="fb"/></g>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+<header class="masthead">
+  <p class="kicker">Peptide receptor radionuclide therapy &middot; cut-paper explainer</p>
+  <h1>The <em>Lutetium&#8209;177</em> Reel</h1>
+  <p class="standfirst">Twelve scenes on how one molecule finds a grade&nbsp;1, stage&nbsp;4 neuroendocrine tumour by its receptors, gets swallowed by it, and irradiates it from the inside out.</p>
+  <div class="chips">
+    <span class="chip">Lu&#8209;177 DOTATATE</span>
+    <span class="chip">SSTR2&#8209;targeted</span>
+    <span class="chip">&beta;&#8315; &middot; t&frac12; 6.65 d</span>
+    <span class="chip">4 &times; 7.4 GBq</span>
+    <span class="chip warn">Educational &mdash; not medical advice</span>
+  </div>
+</header>
+
+<div class="player">
+<div class="stage" id="stage">
+
+<!-- ============ 01 ============ -->
+<figure class="sc is-active" data-dur="10">
+<div class="svg-hold">
+<svg viewBox="0 0 720 420" role="img" aria-label="Title card. Lutetium-177 DOTATATE is built from three parts: an octreotate peptide that binds the receptor, a DOTA cage that holds the metal, and the lutetium-177 atom that emits the radiation.">
+  <rect width="720" height="420" class="f2"/>
+  <g class="cut">
+    <rect x="46" y="54" width="626" height="316" rx="2" class="f3" transform="rotate(-1.1 359 212)"/>
+    <rect x="48" y="44" width="624" height="320" rx="2" class="f1"/>
+  </g>
+  <text x="78" y="90" class="t-k a a-dn">PEPTIDE RECEPTOR RADIONUCLIDE THERAPY</text>
+  <text x="76" y="144" class="t-d a a-up d1">Lu-177 DOTATATE</text>
+  <text x="78" y="176" class="t-h fs a a-up d2" style="font-size:19px">grade 1 &#183; stage 4 neuroendocrine tumour</text>
+  <line x1="78" y1="198" x2="420" y2="198" class="si w1 a a-in d3"/>
+
+  <g class="a a-l d4">
+    <rect x="76" y="226" width="118" height="46" rx="3" class="f2 cut"/>
+    <rect x="76" y="226" width="118" height="46" rx="3" class="fn sr w2"/>
+    <text x="135" y="254" class="t-l mid fr">octreotate</text>
+    <text x="135" y="292" class="t-m mid">the address</text>
+  </g>
+  <line x1="196" y1="249" x2="218" y2="249" class="ss w2 rc a a-in d5" marker-end="url(#ar-s)"/>
+  <g class="a a-up d5">
+    <rect x="222" y="226" width="86" height="46" rx="3" class="f2 cut"/>
+    <rect x="222" y="226" width="86" height="46" rx="3" class="fn sl w2"/>
+    <text x="265" y="254" class="t-l mid fl">DOTA</text>
+    <text x="265" y="292" class="t-m mid">the cage</text>
+  </g>
+  <line x1="310" y1="249" x2="332" y2="249" class="ss w2 rc a a-in d6" marker-end="url(#ar-s)"/>
+  <g class="a a-r d6">
+    <rect x="336" y="226" width="96" height="46" rx="3" class="f2 cut"/>
+    <rect x="336" y="226" width="96" height="46" rx="3" class="fn sb w2"/>
+    <text x="384" y="254" class="t-l mid" style="fill:var(--lu)">177-Lu</text>
+    <text x="384" y="292" class="t-m mid">the payload</text>
+  </g>
+
+  <text x="78" y="336" class="t-m a a-in d8">12 scenes &#183; about two minutes &#183; press play</text>
+
+  <g class="a a-pop d3">
+    <circle cx="566" cy="212" r="52" class="f2 cut"/>
+    <circle cx="566" cy="212" r="52" class="fn sh w1"/>
+    <ellipse cx="566" cy="212" rx="48" ry="19" class="fn sl w1 dash2" transform="rotate(28 566 212)"/>
+    <ellipse cx="566" cy="212" rx="48" ry="19" class="fn sl w1 dash2" transform="rotate(-28 566 212)"/>
+    <circle cx="566" cy="212" r="17" class="fl"/>
+    <text x="566" y="217" class="t-l mid" style="fill:var(--paper-1)">Lu</text>
+  </g>
+  <g class="a-spill"><circle cx="566" cy="212" r="52" class="fn sb w2"/></g>
+  <g class="a-spill s2"><circle cx="566" cy="212" r="52" class="fn sb w2"/></g>
+  <text x="566" y="300" class="t-m mid a a-in d7">&beta;&#8315; emitter &#183; t&frac12; 6.65 d</text>
+</svg>
+</div>
+<figcaption class="narration">
+  <h2>One molecule, three jobs</h2>
+  <p>Lutetium&#8209;177 DOTATATE &mdash; marketed as Lutathera &mdash; is a synthetic somatostatin analogue welded to a radioactive metal. The peptide half decides <em>where</em> the drug goes. The metal half decides <em>what happens</em> when it gets there. Everything that follows is a consequence of those two halves being permanently bolted together.</p>
+</figcaption>
+</figure>
+
+<!-- ============ 02 ============ -->
+<figure class="sc" data-dur="12">
+<div class="svg-hold">
+<svg viewBox="0 0 720 420" role="img" aria-label="A grade 1 stage 4 midgut neuroendocrine tumour: a small primary in the ileum with multiple liver metastases. Grade 1 means Ki-67 at or below 2 percent; stage 4 means distant spread, most often to the liver.">
+  <rect width="720" height="420" class="f2"/>
+  <text x="34" y="44" class="t-k">SCENE 02 &#183; THE DISEASE ON THE TABLE</text>
+
+  <g class="a a-in">
+    <path d="M186 74c-42 0-66 17-74 46l-23 80c-9 29-7 48 2 65v86c0 15 11 25 25 25h140c14 0 25-10 25-25v-86c9-17 11-36 2-65l-23-80c-8-29-32-46-74-46z" class="f1 cut"/>
+  </g>
+  <path d="M122 158c32-17 88-19 124-6 15 5 19 17 15 29-7 21-32 38-70 40-31 2-61-8-71-25-7-11-6-30 2-38z" class="fv a a-up d1"/>
+  <text x="186" y="196" class="t-l mid" style="fill:var(--paper-1)">liver</text>
+  <path d="M116 236c26-8 62-9 86-4 10 2 12 9 6 13-18 11-64 12-88 4-7-3-8-11-4-13z" class="f3 a a-up d2"/>
+  <text x="163" y="253" class="t-m" style="font-size:11px">pancreas</text>
+  <path d="M124 286c16-14 40-6 46 8 6 15-10 26-24 20-12-5-16-18-6-26m42 34c18-12 42 0 44 16 2 14-14 24-28 18-13-6-18-22-8-30" class="fn ss w2 rc rj a a-in d3"/>
+  <text x="196" y="330" class="t-m" style="font-size:11px">ileum</text>
+
+  <circle cx="150" cy="170" r="9" class="ft a a-pop d5"/>
+  <circle cx="186" cy="152" r="6.5" class="ft a a-pop d6"/>
+  <circle cx="214" cy="178" r="11" class="ft a a-pop d6"/>
+  <circle cx="243" cy="160" r="5.5" class="ft a a-pop d7"/>
+  <circle cx="168" cy="191" r="5" class="ft a a-pop d7"/>
+  <circle cx="226" cy="150" r="4.5" class="ft a a-pop d8"/>
+  <circle cx="141" cy="299" r="7" class="ft a a-pop d4"/>
+
+  <g class="a a-l d4">
+    <line x1="141" y1="299" x2="86" y2="352" class="st w1 rc"/>
+    <text x="82" y="366" class="t-m end st" style="font-size:11px">primary</text>
+  </g>
+  <g class="a a-r d8">
+    <line x1="243" y1="160" x2="300" y2="112" class="st w1 rc"/>
+    <text x="304" y="108" class="t-m st" style="font-size:11px">liver metastases</text>
+  </g>
+
+  <g class="a a-r d2">
+    <rect x="376" y="70" width="312" height="112" rx="3" class="f1 cut"/>
+    <text x="398" y="98" class="t-k">GRADE 1</text>
+    <text x="398" y="132" class="t-n">&#8804; 2%</text>
+    <text x="466" y="132" class="t-m">Ki-67 proliferation index</text>
+    <text x="398" y="156" class="t-m" style="font-size:11px">&lt; 2 mitoses / 2 mm&#178; &#183; well differentiated</text>
+  </g>
+  <g class="a a-r d4">
+    <rect x="376" y="196" width="312" height="112" rx="3" class="f1 cut"/>
+    <text x="398" y="224" class="t-k">STAGE 4</text>
+    <text x="398" y="258" class="t-n">M1</text>
+    <text x="442" y="258" class="t-m">distant metastases present</text>
+    <text x="398" y="282" class="t-m" style="font-size:11px">liver in ~85% &#183; beyond surgical cure</text>
+  </g>
+  <g class="a a-up d7">
+    <rect x="376" y="322" width="312" height="62" rx="3" class="f3"/>
+    <rect x="376" y="322" width="4" height="62" class="fl"/>
+    <text x="398" y="348" class="t-m" style="fill:var(--ink);font-size:11.5px">Divides too slowly for cytotoxic chemo.</text>
+    <text x="398" y="370" class="t-m" style="fill:var(--ink);font-size:11.5px">Too scattered for the knife.</text>
+  </g>
+</svg>
+</div>
+<figcaption class="narration">
+  <h2>Slow, and everywhere</h2>
+  <p>Grade&nbsp;1 means a Ki&#8209;67 index of 2% or less and fewer than two mitoses per 2&nbsp;mm&#178; &mdash; a well&#8209;differentiated tumour that divides reluctantly. Stage&nbsp;4 means it has already travelled, in most midgut cases to the liver. That pairing is the whole problem: conventional chemotherapy needs cells that divide, and surgery needs disease it can reach. Neither condition holds here, which is what leaves room for a systemic treatment that homes in on something other than proliferation.</p>
+</figcaption>
+</figure>
+
+<!-- ============ 03 ============ -->
+<figure class="sc" data-dur="12">
+<div class="svg-hold">
+<svg viewBox="0 0 720 420" role="img" aria-label="A normal cell carries a few somatostatin receptors; a well-differentiated grade 1 neuroendocrine tumour cell overexpresses them, covering its surface. That receptor density is the target the drug is aimed at.">
+  <rect width="720" height="420" class="f2"/>
+  <text x="34" y="44" class="t-k">SCENE 03 &#183; WHY THIS TUMOUR IS ADDRESSABLE</text>
+
+  <g class="a a-l d1">
+    <circle cx="164" cy="204" r="66" class="fv cut"/>
+    <circle cx="164" cy="204" r="24" class="f3"/>
+    <use href="#recep" transform="translate(164 204) rotate(-40) translate(0 -66)"/>
+    <use href="#recep" transform="translate(164 204) rotate(25) translate(0 -66)"/>
+    <use href="#recep" transform="translate(164 204) rotate(150) translate(0 -66)"/>
+    <text x="164" y="308" class="t-l mid">normal cell</text>
+    <text x="164" y="328" class="t-m mid">a few receptors</text>
+  </g>
+
+  <g class="a a-r d3">
+    <circle cx="470" cy="204" r="80" class="fts cut"/>
+    <circle cx="470" cy="204" r="80" class="fn st w2"/>
+    <circle cx="470" cy="204" r="27" class="ft"/>
+    <g class="a a-pop d5">
+      <use href="#recep" transform="translate(470 204) rotate(0) translate(0 -80)"/>
+      <use href="#recep" transform="translate(470 204) rotate(24) translate(0 -80)"/>
+      <use href="#recep" transform="translate(470 204) rotate(48) translate(0 -80)"/>
+      <use href="#recep" transform="translate(470 204) rotate(72) translate(0 -80)"/>
+      <use href="#recep" transform="translate(470 204) rotate(96) translate(0 -80)"/>
+      <use href="#recep" transform="translate(470 204) rotate(120) translate(0 -80)"/>
+      <use href="#recep" transform="translate(470 204) rotate(144) translate(0 -80)"/>
+      <use href="#recep" transform="translate(470 204) rotate(168) translate(0 -80)"/>
+      <use href="#recep" transform="translate(470 204) rotate(192) translate(0 -80)"/>
+      <use href="#recep" transform="translate(470 204) rotate(216) translate(0 -80)"/>
+      <use href="#recep" transform="translate(470 204) rotate(240) translate(0 -80)"/>
+      <use href="#recep" transform="translate(470 204) rotate(264) translate(0 -80)"/>
+      <use href="#recep" transform="translate(470 204) rotate(288) translate(0 -80)"/>
+      <use href="#recep" transform="translate(470 204) rotate(312) translate(0 -80)"/>
+      <use href="#recep" transform="translate(470 204) rotate(336) translate(0 -80)"/>
+    </g>
+    <text x="470" y="322" class="t-l mid">grade 1 NET cell</text>
+    <text x="470" y="342" class="t-m mid">SSTR2 over-expressed</text>
+  </g>
+
+  <line x1="248" y1="192" x2="374" y2="192" class="ss w2 rc a a-in d4" marker-end="url(#ar-s)"/>
+  <text x="305" y="180" class="t-m mid a a-in d4">same lineage</text>
+  <text x="305" y="218" class="t-m mid a a-in d5" style="fill:var(--receptor)">10&ndash;100&times; more SSTR2</text>
+
+  <g class="a a-dn d6">
+    <rect x="392" y="56" width="296" height="70" rx="3" class="f1 cut"/>
+    <text x="412" y="80" class="t-k">THE COUNTER-INTUITIVE BIT</text>
+    <text x="412" y="100" class="t-m" style="fill:var(--ink);font-size:11px">Lower grade = better differentiated</text>
+    <text x="412" y="116" class="t-m" style="fill:var(--ink);font-size:11px">= more receptor to aim at.</text>
+  </g>
+  <g class="a a-up d8">
+    <rect x="34" y="354" width="654" height="52" rx="3" class="f3"/>
+    <rect x="34" y="354" width="4" height="52" class="fr"/>
+    <text x="52" y="378" class="t-m" style="fill:var(--ink);font-size:11px">70&ndash;100% of well-differentiated gastroenteropancreatic NETs are SSTR2-positive.</text>
+    <text x="52" y="396" class="t-m" style="fill:var(--ink);font-size:11px">Receptor density falls as grade rises &mdash; grade 1 is the friendliest target, not the hardest.</text>
+  </g>
+</svg>
+</div>
+<figcaption class="narration">
+  <h2>The receptor is the address</h2>
+  <p>Well&#8209;differentiated NET cells keep the machinery of the neuroendocrine cells they came from, including somatostatin receptor subtype&nbsp;2 &mdash; and they carry ten to a hundred times more of it than normal tissue. Nothing about the tumour's growth rate is being exploited here; the drug is aimed at a surface protein. This is why the arithmetic runs backwards from most oncology: a grade&nbsp;1 tumour is a <em>better</em> target than a grade&nbsp;3 one, because differentiation and receptor density travel together.</p>
+</figcaption>
+</figure>
+
+<!-- ============ 04 ============ -->
+<figure class="sc" data-dur="12">
+<div class="svg-hold">
+<svg viewBox="0 0 720 420" role="img" aria-label="The molecule assembled: Tyr-3-octreotate binds the receptor, the DOTA macrocycle chelates the metal, and lutetium-177 supplies beta particles. Physical data: 6.65 day half-life, mean beta energy 134 keV, gamma emissions at 113 and 208 keV.">
+  <rect width="720" height="420" class="f2"/>
+  <text x="34" y="44" class="t-k">SCENE 04 &#183; ASSEMBLING THE MOLECULE</text>
+
+  <g class="a a-l d1">
+    <circle cx="150" cy="150" r="13" class="fr"/><circle cx="186" cy="128" r="13" class="fr"/>
+    <circle cx="222" cy="140" r="13" class="fr"/><circle cx="232" cy="178" r="13" class="fr"/>
+    <circle cx="206" cy="206" r="13" class="fr"/><circle cx="168" cy="200" r="13" class="fr"/>
+    <circle cx="142" cy="184" r="13" class="fr"/>
+    <path d="M150 150 L186 128 L222 140 L232 178 L206 206 L168 200 L142 184 Z" class="fn sr w2 rj"/>
+    <path d="M150 150 L232 178" class="fn ss w1 dash2"/>
+    <text x="196" y="252" class="t-l mid fr">Tyr&#179;-octreotate</text>
+    <text x="196" y="272" class="t-m mid">8-residue somatostatin analogue</text>
+    <text x="196" y="290" class="t-m mid">binds SSTR2 at sub-nanomolar affinity</text>
+  </g>
+
+  <line x1="262" y1="168" x2="316" y2="168" class="ss w2 rc a a-in d3"/>
+  <text x="289" y="156" class="t-m mid a a-in d3" style="font-size:11px">amide bond</text>
+
+  <g class="a a-up d4">
+    <path d="M400 92 L448 112 L468 160 L448 208 L400 228 L352 208 L332 160 L352 112 Z" class="f1 cut"/>
+    <path d="M400 92 L448 112 L468 160 L448 208 L400 228 L352 208 L332 160 L352 112 Z" class="fn sl w3 rj"/>
+    <path d="M400 92 L400 62 M468 160 L498 160 M400 228 L400 258 M332 160 L302 160" class="fn sl w2 rc"/>
+    <circle cx="400" cy="62" r="6" class="fl"/><circle cx="498" cy="160" r="6" class="fl"/>
+    <circle cx="400" cy="258" r="6" class="fl"/><circle cx="302" cy="160" r="6" class="fl"/>
+    <text x="400" y="292" class="t-l mid fl">DOTA</text>
+    <text x="400" y="312" class="t-m mid">4-armed chelator cage</text>
+  </g>
+
+  <g class="a a-pop d6">
+    <circle cx="400" cy="160" r="30" class="fl"/>
+    <text x="400" y="156" class="t-l mid" style="fill:var(--paper-1);font-size:11px">177</text>
+    <text x="400" y="176" class="t-l mid" style="fill:var(--paper-1);font-size:17px">Lu</text>
+  </g>
+  <g class="a-throb s1"><circle cx="400" cy="160" r="40" class="fn sb w2"/></g>
+
+  <g class="a a-r d8">
+    <rect x="516" y="74" width="176" height="252" rx="3" class="f1 cut"/>
+    <text x="536" y="104" class="t-k">PHYSICS</text>
+    <text x="536" y="136" class="t-n">6.65 d</text>
+    <text x="536" y="156" class="t-m">physical half-life</text>
+    <text x="536" y="192" class="t-n">134 keV</text>
+    <text x="536" y="212" class="t-m" style="font-size:11px">mean &beta;&#8315; energy</text>
+    <text x="536" y="228" class="t-m" style="font-size:11px">maximum 498 keV</text>
+    <text x="536" y="260" class="t-n">2 mm</text>
+    <text x="536" y="280" class="t-m" style="font-size:11px">max tissue range</text>
+    <text x="536" y="300" class="t-m" style="font-size:11px">&gamma; 113 &amp; 208 keV</text>
+    <text x="536" y="316" class="t-m" style="font-size:11px">imageable on SPECT</text>
+  </g>
+
+  <g class="a a-up d10">
+    <rect x="34" y="348" width="654" height="52" rx="3" class="f3"/>
+    <rect x="34" y="348" width="4" height="52" class="fl"/>
+    <text x="52" y="372" class="t-m" style="fill:var(--ink);font-size:11px">The cage matters as much as the payload: a loose lutetium ion would drift to bone.</text>
+    <text x="52" y="390" class="t-m" style="fill:var(--ink);font-size:11px">DOTA holds it so tightly that where the peptide goes, the radiation goes &mdash; and nowhere else.</text>
+  </g>
+</svg>
+</div>
+<figcaption class="narration">
+  <h2>Address, cage, payload</h2>
+  <p>Tyr&#179;&#8209;octreotate is an eight&#8209;residue somatostatin analogue that locks onto SSTR2. DOTA is a macrocyclic chelator whose four arms clamp a metal ion. Lutetium&#8209;177 is a &beta;&#8315; emitter with a 6.65&#8209;day half&#8209;life &mdash; long enough to keep irradiating for weeks, short enough that the patient is not radioactive for months. The chelation is not a detail: an unchelated lutetium ion behaves like calcium and heads for bone marrow, which is exactly the tissue you are trying to protect.</p>
+</figcaption>
+</figure>
+
+<!-- ============ 05 ============ -->
+<figure class="sc" data-dur="12">
+<div class="svg-hold">
+<svg viewBox="0 0 720 420" role="img" aria-label="Theranostics: the same peptide carries gallium-68 for a PET scan or lutetium-177 for therapy. Uptake is graded on the Krenning scale, and only scores of 3 or 4 - uptake at or above liver - qualify a patient for treatment.">
+  <rect width="720" height="420" class="f2"/>
+  <text x="34" y="44" class="t-k">SCENE 05 &#183; THE SCAN IS THE ELIGIBILITY TEST</text>
+
+  <g class="a a-l d1">
+    <rect x="34" y="70" width="294" height="84" rx="3" class="f1 cut"/>
+    <rect x="34" y="70" width="4" height="84" class="fg"/>
+    <text x="56" y="98" class="t-l fg">Ga-68 DOTATATE</text>
+    <text x="56" y="120" class="t-m" style="font-size:11.5px">PET/CT &#183; positron emitter, t&frac12; 68 min</text>
+    <text x="56" y="140" class="t-m" style="font-size:11.5px">shows where the receptors are</text>
+  </g>
+  <g class="a a-l d3">
+    <rect x="34" y="176" width="294" height="84" rx="3" class="f1 cut"/>
+    <rect x="34" y="176" width="4" height="84" class="fl"/>
+    <text x="56" y="204" class="t-l fl">Lu-177 DOTATATE</text>
+    <text x="56" y="226" class="t-m" style="font-size:11.5px">therapy &#183; &beta;&#8315; emitter, t&frac12; 6.65 d</text>
+    <text x="56" y="246" class="t-m" style="font-size:11.5px">deposits dose in the same places</text>
+  </g>
+  <text x="34" y="170" class="t-m a a-in d4" style="font-size:10.5px">one peptide &#183; two different metals</text>
+
+  <g class="a a-r d2">
+    <rect x="366" y="66" width="322" height="186" rx="3" class="f1 cut"/>
+    <text x="386" y="90" class="t-k">Ga-68 PET, DAY 0</text>
+    <g transform="translate(96 0)">
+      <path d="M520 104c-16 0-24 7-27 18l-9 31c-4 11-3 18 1 25v33c0 6 4 9 9 9h52c5 0 9-3 9-9v-33c4-7 5-14 1-25l-9-31c-3-11-11-18-27-18z" class="f3"/>
+      <circle cx="506" cy="150" r="8" class="fg a-blip"/>
+      <circle cx="528" cy="142" r="6" class="fg a-blip s1"/>
+      <circle cx="516" cy="164" r="9" class="fg a-blip s2"/>
+      <circle cx="538" cy="160" r="5" class="fg a-blip s3"/>
+      <ellipse cx="498" cy="194" rx="7" ry="10" class="fg" opacity=".45"/>
+      <ellipse cx="542" cy="194" rx="7" ry="10" class="fg" opacity=".45"/>
+    </g>
+    <text x="386" y="124" class="t-m" style="font-size:11px;fill:var(--ink)">solid marks = tumour</text>
+    <text x="386" y="146" class="t-m" style="font-size:11px">faint marks = normal</text>
+    <text x="386" y="162" class="t-m" style="font-size:11px">kidney and spleen uptake</text>
+    <text x="386" y="196" class="t-m" style="font-size:11px">Read lesion by lesion &mdash;</text>
+    <text x="386" y="212" class="t-m" style="font-size:11px">uptake varies between sites</text>
+    <text x="386" y="228" class="t-m" style="font-size:11px">in the same patient.</text>
+  </g>
+
+  <g class="a a-r d6">
+    <rect x="366" y="264" width="322" height="46" rx="3" class="f3"/>
+    <rect x="366" y="264" width="4" height="46" class="fg"/>
+    <text x="386" y="284" class="t-m" style="fill:var(--ink);font-size:11px">No uptake, no treatment: a lesion that stays</text>
+    <text x="386" y="302" class="t-m" style="fill:var(--ink);font-size:11px">dark will not retain the therapy either.</text>
+  </g>
+
+  <g class="a a-up d8">
+    <text x="34" y="330" class="t-k">KRENNING SCORE &#183; UPTAKE RELATIVE TO NORMAL ORGAN</text>
+    <line x1="34" y1="386" x2="600" y2="386" class="sh w1"/>
+    <rect x="34" y="378" width="96" height="8" rx="2" class="f3"/>
+    <rect x="140" y="370" width="96" height="16" rx="2" class="f3"/>
+    <rect x="246" y="362" width="96" height="24" rx="2" class="f3"/>
+    <rect x="352" y="352" width="96" height="34" rx="2" class="fg"/>
+    <rect x="458" y="342" width="96" height="44" rx="2" class="fg"/>
+    <text x="82" y="404" class="t-m mid" style="font-size:11px">0 &#183; none</text>
+    <text x="188" y="404" class="t-m mid" style="font-size:11px">1 &#183; &lt; liver</text>
+    <text x="294" y="404" class="t-m mid" style="font-size:11px">2 &#183; = liver</text>
+    <text x="400" y="404" class="t-m mid" style="font-size:11px;fill:var(--ga)">3 &#183; &gt; liver</text>
+    <text x="506" y="404" class="t-m mid" style="font-size:11px;fill:var(--ga)">4 &#183; &gt; spleen</text>
+    <path d="M352 336 L554 336" class="fn sg w2 rc"/>
+    <text x="568" y="340" class="t-l fg" style="font-size:11.5px">&larr; eligible</text>
+  </g>
+</svg>
+</div>
+<figcaption class="narration">
+  <h2>Look before you shoot</h2>
+  <p>Swap the payload and the same peptide becomes a diagnostic: gallium&#8209;68 DOTATATE is a PET tracer that maps receptor density lesion by lesion. This is what "theranostics" actually means &mdash; the scan and the treatment share a targeting molecule, so the scan genuinely predicts where the dose will land. Uptake is graded on the Krenning scale, and only grade&nbsp;3 or&nbsp;4 &mdash; uptake exceeding normal liver &mdash; qualifies. A lesion that stays dark on the PET will not hold the therapy either.</p>
+</figcaption>
+</figure>
+
+<!-- ============ 06 ============ -->
+<figure class="sc" data-dur="13">
+<div class="svg-hold">
+<svg viewBox="0 0 720 420" role="img" aria-label="Infusion day: an amino acid infusion of lysine and arginine starts 30 minutes before and runs about 4 hours, saturating the kidney's reabsorption receptors, while 7.4 gigabecquerel of Lu-177 DOTATATE runs in over 30 minutes.">
+  <rect width="720" height="420" class="f2"/>
+  <text x="34" y="44" class="t-k">SCENE 06 &#183; INFUSION DAY</text>
+
+  <line x1="96" y1="72" x2="96" y2="250" class="ss w2 rc a a-in"/>
+  <g class="a a-dn d1">
+    <path d="M56 84h44v58l-22 22-22-22z" class="fv cut"/>
+    <text x="78" y="118" class="t-l mid" style="fill:var(--paper-1);font-size:10.5px">AA</text>
+  </g>
+  <g class="a a-dn d3">
+    <path d="M108 84h44v58l-22 22-22-22z" class="fl cut"/>
+    <text x="130" y="118" class="t-l mid" style="fill:var(--paper-1);font-size:10.5px">Lu</text>
+  </g>
+  <path d="M78 164 C78 210 104 206 104 246" class="fn sv w2 rc a a-in d2"/>
+  <path d="M130 164 C130 210 108 206 108 246" class="fn sl w2 rc a a-in d4"/>
+  <g class="a a-up d5">
+    <path d="M60 252h92c8 0 14 6 14 14v18c0 8-6 14-14 14H60z" class="f1 cut"/>
+    <circle cx="150" cy="275" r="5" class="fi"/>
+    <text x="106" y="316" class="t-m mid" style="font-size:11px">peripheral line</text>
+  </g>
+  <text x="56" y="70" class="t-m" style="font-size:11px">lysine + arginine 2.5%</text>
+
+  <g class="a a-r d4">
+    <rect x="220" y="66" width="228" height="188" rx="3" class="f1 cut"/>
+    <text x="240" y="92" class="t-k">KIDNEY, PROXIMAL TUBULE</text>
+    <path d="M288 112c-32 0-52 22-52 52s22 56 52 56c15 0 20-9 20-20 0-15-13-21-13-36s13-21 13-36c0-11-5-16-20-16z" class="f3"/>
+    <use href="#recep" transform="translate(310 136) rotate(90) translate(0 0)"/>
+    <use href="#recep" transform="translate(310 164) rotate(90) translate(0 0)"/>
+    <use href="#recep" transform="translate(310 192) rotate(90) translate(0 0)"/>
+    <circle cx="326" cy="136" r="6" class="fv"/><circle cx="326" cy="164" r="6" class="fv"/><circle cx="326" cy="192" r="6" class="fv"/>
+    <g class="a-jit"><circle cx="396" cy="164" r="8" class="fl"/></g>
+    <path d="M386 164 L356 164" class="fn sl w2 rc dash2"/>
+    <path d="M360 156 L352 164 L360 172" class="fn sa w2 rc rj"/>
+    <text x="372" y="196" class="t-m mid" style="font-size:10px;fill:var(--alert)">turned away</text>
+    <text x="240" y="228" class="t-m" style="font-size:10.5px;fill:var(--ink)">Amino acids occupy the site,</text>
+    <text x="240" y="244" class="t-m" style="font-size:10.5px;fill:var(--ink)">so the peptide leaves in urine.</text>
+  </g>
+
+  <g class="a a-r d6">
+    <rect x="462" y="66" width="226" height="188" rx="3" class="f1 cut"/>
+    <text x="480" y="92" class="t-k">THE DOSE</text>
+    <text x="480" y="128" class="t-n">7.4 GBq</text>
+    <text x="480" y="148" class="t-m" style="font-size:11px">200 mCi, over 30 minutes</text>
+    <line x1="480" y1="166" x2="670" y2="166" class="sh w1"/>
+    <text x="480" y="192" class="t-m" style="font-size:11px">Long-acting octreotide held</text>
+    <text x="480" y="208" class="t-m" style="font-size:11px">&ge; 4 weeks before &mdash; it would</text>
+    <text x="480" y="224" class="t-m" style="font-size:11px">compete for the same receptor.</text>
+    <text x="480" y="244" class="t-m" style="font-size:11px">Re-dosed 4&ndash;24 h afterwards.</text>
+  </g>
+
+  <g class="a a-up d8">
+    <line x1="34" y1="352" x2="688" y2="352" class="ss w2 rc"/>
+    <g><line x1="86" y1="344" x2="86" y2="360" class="ss w2 rc"/><text x="86" y="336" class="t-m mid" style="font-size:10.5px">&minus;30 min</text><text x="86" y="378" class="t-m mid" style="font-size:10.5px;fill:var(--ink)">antiemetic</text><text x="86" y="394" class="t-m mid" style="font-size:10.5px;fill:var(--ink)">+ amino acids</text></g>
+    <g><line x1="252" y1="344" x2="252" y2="360" class="sl w3 rc"/><text x="252" y="336" class="t-m mid" style="font-size:10.5px;fill:var(--lu)">0</text><text x="252" y="378" class="t-m mid" style="font-size:10.5px;fill:var(--ink)">Lutathera</text><text x="252" y="394" class="t-m mid" style="font-size:10.5px;fill:var(--ink)">7.4 GBq / 30 min</text></g>
+    <g><line x1="440" y1="344" x2="440" y2="360" class="ss w2 rc"/><text x="440" y="336" class="t-m mid" style="font-size:10.5px">+4 h</text><text x="440" y="378" class="t-m mid" style="font-size:10.5px;fill:var(--ink)">amino acids</text><text x="440" y="394" class="t-m mid" style="font-size:10.5px;fill:var(--ink)">finish</text></g>
+    <g><line x1="624" y1="344" x2="624" y2="360" class="ss w2 rc"/><text x="624" y="336" class="t-m mid" style="font-size:10.5px">+24 h</text><text x="624" y="378" class="t-m mid" style="font-size:10.5px;fill:var(--ink)">SPECT/CT</text><text x="624" y="394" class="t-m mid" style="font-size:10.5px;fill:var(--ink)">+ octreotide LAR</text></g>
+    <rect x="86" y="348" width="354" height="8" rx="4" class="fv" opacity=".55"/>
+  </g>
+</svg>
+</div>
+<figcaption class="narration">
+  <h2>Why the drip has two bags</h2>
+  <p>The kidney is the dose&#8209;limiting organ, because its proximal tubule reabsorbs small peptides through the megalin receptor and would hoard the radiopeptide. So a 2.5% lysine&ndash;arginine infusion starts 30&nbsp;minutes ahead and runs for about four hours, saturating that route so the drug leaves in the urine instead of lodging in the tubule. The therapy itself is undramatic: 7.4&nbsp;GBq over half an hour. Long&#8209;acting octreotide is held for at least four weeks beforehand &mdash; it binds the same receptor, and would occupy the parking space.</p>
+</figcaption>
+</figure>
+
+<!-- ============ 07 ============ -->
+<figure class="sc" data-dur="13">
+<div class="svg-hold">
+<svg viewBox="0 0 720 420" role="img" aria-label="Four steps: the peptide approaches, binds SSTR2, the receptor-ligand pair is internalised by endocytosis, and the vesicle fuses with a lysosome where the peptide is degraded and the lutetium-DOTA complex is trapped inside the cell.">
+  <rect width="720" height="420" class="f2"/>
+  <text x="34" y="44" class="t-k">SCENE 07 &#183; LOCK, SWALLOW, TRAP</text>
+
+  <g class="a a-in d1">
+    <path d="M40 300 Q100 268 160 300" class="fn st w3 rc"/>
+    <use href="#recep" transform="translate(100 282) rotate(0) translate(0 0)"/>
+    <g class="a-drift" style="--dx:0px;--dy:44px">
+      <circle cx="100" cy="150" r="13" class="fl"/>
+      <circle cx="100" cy="126" r="8" class="fr"/>
+    </g>
+    <text x="100" y="340" class="t-l mid">1 &#183; approach</text>
+    <text x="100" y="360" class="t-m mid" style="font-size:11px">drug in the blood</text>
+  </g>
+
+  <g class="a a-in d4">
+    <path d="M210 300 Q270 268 330 300" class="fn st w3 rc"/>
+    <use href="#recep-lit" transform="translate(270 282) rotate(0) translate(0 0)"/>
+    <circle cx="270" cy="272" r="13" class="fl"/>
+    <circle cx="270" cy="252" r="8" class="fr"/>
+    <g class="a-throb"><circle cx="270" cy="272" r="26" class="fn sr w2"/></g>
+    <text x="270" y="340" class="t-l mid">2 &#183; bind SSTR2</text>
+    <text x="270" y="360" class="t-m mid" style="font-size:11px">K&#8342; &lt; 1 nmol/L</text>
+  </g>
+
+  <g class="a a-in d7">
+    <path d="M380 300 Q410 292 424 268 Q440 240 456 268 Q470 292 500 300" class="fn st w3 rc"/>
+    <circle cx="440" cy="266" r="13" class="fl"/>
+    <circle cx="440" cy="246" r="8" class="fr"/>
+    <circle cx="440" cy="258" r="30" class="fn st w2 dash"/>
+    <path d="M440 318 L440 296" class="fn ss w2 rc" marker-end="url(#ar-s)"/>
+    <text x="440" y="340" class="t-l mid">3 &#183; endocytosis</text>
+    <text x="440" y="360" class="t-m mid" style="font-size:11px">receptor + ligand pulled in</text>
+  </g>
+
+  <g class="a a-in d10">
+    <path d="M550 300 Q610 268 670 300" class="fn st w3 rc"/>
+    <circle cx="610" cy="250" r="34" class="f3"/>
+    <circle cx="610" cy="250" r="34" class="fn st w2"/>
+    <text x="610" y="212" class="t-m mid" style="font-size:10.5px">lysosome</text>
+    <circle cx="610" cy="252" r="13" class="fl"/>
+    <path d="M598 236 l-8 -8 M622 236 l8 -8 M598 268 l-8 8 M622 268 l8 8" class="fn sr w2 rc" opacity=".6"/>
+    <text x="610" y="340" class="t-l mid">4 &#183; trapped</text>
+    <text x="610" y="360" class="t-m mid" style="font-size:11px">digested; metal trapped</text>
+  </g>
+
+  <path d="M172 288 L198 288" class="fn ss w2 rc a a-in d3" marker-end="url(#ar-s)"/>
+  <path d="M342 288 L368 288" class="fn ss w2 rc a a-in d6" marker-end="url(#ar-s)"/>
+  <path d="M512 288 L538 288" class="fn ss w2 rc a a-in d9" marker-end="url(#ar-s)"/>
+
+  <g class="a a-dn d2">
+    <rect x="34" y="62" width="654" height="66" rx="3" class="f1 cut"/>
+    <text x="54" y="84" class="t-k">THE POINT OF STEP 4</text>
+    <text x="54" y="104" class="t-m" style="fill:var(--ink);font-size:11px">The DOTA&ndash;lutetium complex is charged and cannot cross the lysosomal membrane.</text>
+    <text x="54" y="120" class="t-m" style="fill:var(--ink);font-size:11px">It is stuck inside the tumour cell, decaying, for days.</text>
+  </g>
+  <g class="a a-in d12">
+    <rect x="34" y="140" width="654" height="48" rx="3" class="f3"/>
+    <rect x="34" y="140" width="4" height="48" class="fr"/>
+    <text x="54" y="162" class="t-m" style="fill:var(--ink);font-size:11px">Tumour retains the drug for days; the blood clears it in hours.</text>
+    <text x="54" y="180" class="t-m" style="fill:var(--ink);font-size:11px">That gap &mdash; what the tumour keeps versus what the body flushes &mdash; is the therapeutic window.</text>
+  </g>
+</svg>
+</div>
+<figcaption class="narration">
+  <h2>Swallowed, then stranded</h2>
+  <p>Binding is only the start. SSTR2 is an internalising receptor: once occupied, the whole receptor&ndash;ligand pair is drawn into the cell inside a vesicle, which fuses with a lysosome. Enzymes chew up the peptide, but the DOTA&ndash;lutetium complex is charged and cannot get back out across the membrane. It sits in the tumour cell for days while the blood clears the unbound drug in hours. That difference between what the tumour keeps and what the body flushes is the entire therapeutic margin.</p>
+</figcaption>
+</figure>
+
+<!-- ============ 08 ============ -->
+<figure class="sc" data-dur="13">
+<div class="svg-hold">
+<svg viewBox="0 0 720 420" role="img" aria-label="Lutetium-177 emits a beta particle, which ionises water into hydroxyl radicals and strikes DNA directly. Double-strand breaks accumulate beyond what the cell can repair, and the cell dies by apoptosis over days to weeks.">
+  <rect width="720" height="420" class="f2"/>
+  <text x="34" y="44" class="t-k">SCENE 08 &#183; WHAT THE RADIATION ACTUALLY DOES</text>
+
+  <g class="a a-l d1">
+    <circle cx="120" cy="206" r="60" class="f1 cut"/>
+    <circle cx="120" cy="206" r="60" class="fn sh w1"/>
+    <circle cx="120" cy="206" r="16" class="fl"/>
+    <text x="120" y="211" class="t-l mid" style="fill:var(--paper-1);font-size:10px">Lu</text>
+    <g class="a-spill"><circle cx="120" cy="206" r="24" class="fn sb w2"/></g>
+    <g class="a-spill s2"><circle cx="120" cy="206" r="24" class="fn sb w2"/></g>
+    <use href="#beta-dart" transform="translate(120 206) rotate(35) translate(0 -46)"/>
+    <use href="#beta-dart" transform="translate(120 206) rotate(-70) translate(0 -46)"/>
+    <use href="#beta-dart" transform="translate(120 206) rotate(140) translate(0 -46)"/>
+    <use href="#beta-dart" transform="translate(120 206) rotate(-160) translate(0 -46)"/>
+    <text x="120" y="292" class="t-l mid">&beta;&#8315; emission</text>
+    <text x="120" y="312" class="t-m mid" style="font-size:11px">one electron per decay</text>
+    <text x="120" y="330" class="t-m mid" style="font-size:11px">mean 134 keV</text>
+  </g>
+
+  <path d="M196 206 L236 206" class="fn sb w2 rc a a-in d3" marker-end="url(#ar-b)"/>
+
+  <g class="a a-in d4">
+    <rect x="216" y="120" width="214" height="172" rx="3" class="f1 cut"/>
+    <text x="234" y="146" class="t-k">TWO ROUTES</text>
+    <circle cx="254" cy="184" r="13" class="fg"/>
+    <text x="254" y="188" class="t-m mid" style="font-size:10.5px;fill:var(--paper-1)">H&#8322;O</text>
+    <path d="M272 184 L298 184" class="fn sb w2 rc" marker-end="url(#ar-b)"/>
+    <circle cx="318" cy="184" r="13" class="fa"/>
+    <text x="318" y="188" class="t-m mid" style="font-size:10.5px;fill:var(--paper-1)">&#8226;OH</text>
+    <text x="234" y="216" class="t-m" style="font-size:11px">indirect &#183; ~70% of damage</text>
+    <line x1="234" y1="232" x2="412" y2="232" class="sh w1"/>
+    <path d="M242 258 L302 258" class="fn sb w2 rc" marker-end="url(#ar-b)"/>
+    <path d="M314 248 l12 20 M326 248 l-12 20" class="fn sa w2 rc"/>
+    <text x="234" y="282" class="t-m" style="font-size:11px">direct &#183; electron hits DNA</text>
+  </g>
+
+  <path d="M440 206 L462 206" class="fn ss w2 rc a a-in d7" marker-end="url(#ar-s)"/>
+
+  <g class="a a-r d8">
+    <rect x="472" y="120" width="216" height="172" rx="3" class="f1 cut"/>
+    <text x="490" y="146" class="t-k">DOUBLE-STRAND BREAK</text>
+    <path d="M490 196 Q512 172 534 196 T578 196" class="fn si w2 rc"/>
+    <path d="M490 196 Q512 220 534 196 T578 196" class="fn si w2 rc"/>
+    <path d="M594 196 Q616 172 638 196 T662 196" class="fn si w2 rc"/>
+    <path d="M594 196 Q616 220 638 196 T662 196" class="fn si w2 rc"/>
+    <path d="M502 190 v12 M518 186 v20 M546 190 v12 M562 186 v20 M606 190 v12 M622 186 v20 M650 190 v12" class="fn ss w1 rc"/>
+    <g class="a-throb"><path d="M580 178 l12 36 M592 178 l-12 36" class="fn sa w3 rc"/></g>
+    <text x="490" y="240" class="t-m" style="font-size:11px">Both rails cut at one point.</text>
+    <text x="490" y="258" class="t-m" style="font-size:11px">No intact template left.</text>
+    <text x="490" y="278" class="t-m" style="font-size:11px;fill:var(--ink)">Repair is outrun &rarr; apoptosis.</text>
+  </g>
+
+  <g class="a a-up d11">
+    <rect x="34" y="330" width="654" height="70" rx="3" class="f3"/>
+    <rect x="34" y="330" width="4" height="70" class="fb"/>
+    <text x="54" y="354" class="t-m" style="fill:var(--ink);font-size:11px">Continuous low-dose-rate irradiation, not a burst. With a 6.65-day half-life and days of</text>
+    <text x="54" y="374" class="t-m" style="fill:var(--ink);font-size:11px">intracellular retention, the tumour is irradiated around the clock for weeks &mdash; which is why</text>
+    <text x="54" y="394" class="t-m" style="fill:var(--ink);font-size:11px">a grade 1 tumour, with almost nothing in cell cycle, still accumulates lethal damage.</text>
+  </g>
+</svg>
+</div>
+<figcaption class="narration">
+  <h2>Electrons, radicals, broken DNA</h2>
+  <p>Each decay throws off a single electron averaging 134&nbsp;keV. Most of the damage it does is indirect: it ionises water into hydroxyl radicals that attack DNA nearby. Some is direct. What matters is the double&#8209;strand break &mdash; both rails of the helix cut at the same point, leaving no intact template to copy from. Single breaks get repaired; double breaks accumulate, and past a threshold the cell triggers apoptosis. Because the isotope keeps decaying for weeks, this is a slow continuous exposure rather than a single blast, which is how a tumour with almost nothing in cell cycle still ends up lethally damaged.</p>
+</figcaption>
+</figure>
+
+<!-- ============ 09 ============ -->
+<figure class="sc" data-dur="13">
+<div class="svg-hold">
+<svg viewBox="0 0 720 420" role="img" aria-label="Crossfire: the beta particle travels far enough to cross dozens of cell diameters, so receptor-negative cells beside a loaded cell are irradiated too. Dose also lands in kidneys, bone marrow, spleen and liver, which is what the follow-up bloods track.">
+  <rect width="720" height="420" class="f2"/>
+  <text x="34" y="44" class="t-k">SCENE 09 &#183; RANGE, CROSSFIRE, AND COLLATERAL DOSE</text>
+
+  <g class="a a-in d1">
+    <circle cx="196" cy="182" r="92" class="fn sb w2 dash"/>
+    <text x="196" y="80" class="t-m mid fb" style="font-size:11px">&beta;&#8315; range from one loaded cell</text>
+  </g>
+  <g class="a a-pop d2">
+    <circle cx="196" cy="182" r="25" class="fts"/><circle cx="196" cy="182" r="25" class="fn st w2"/>
+    <circle cx="196" cy="182" r="9" class="fl"/>
+    <use href="#recep" transform="translate(196 182) rotate(-50) translate(0 -25)"/>
+    <use href="#recep" transform="translate(196 182) rotate(50) translate(0 -25)"/>
+    <use href="#recep" transform="translate(196 182) rotate(180) translate(0 -25)"/>
+  </g>
+  <g class="a a-pop d3">
+    <circle cx="172" cy="232" r="25" class="fts"/><circle cx="172" cy="232" r="25" class="fn st w2"/>
+    <circle cx="172" cy="232" r="9" class="fl"/>
+    <use href="#recep" transform="translate(172 232) rotate(-130) translate(0 -25)"/>
+    <use href="#recep" transform="translate(172 232) rotate(130) translate(0 -25)"/>
+  </g>
+  <g class="a a-pop d4">
+    <circle cx="248" cy="182" r="25" class="f3"/><circle cx="248" cy="182" r="25" class="fn ss w1 dash2"/>
+    <circle cx="144" cy="182" r="25" class="f3"/><circle cx="144" cy="182" r="25" class="fn ss w1 dash2"/>
+    <circle cx="224" cy="232" r="25" class="f3"/><circle cx="224" cy="232" r="25" class="fn ss w1 dash2"/>
+    <circle cx="170" cy="132" r="25" class="f3"/><circle cx="170" cy="132" r="25" class="fn ss w1 dash2"/>
+    <circle cx="224" cy="132" r="25" class="f3"/><circle cx="224" cy="132" r="25" class="fn ss w1 dash2"/>
+  </g>
+  <g class="a a-in d5">
+    <use href="#beta-dart" transform="translate(196 182) rotate(0) translate(0 -52)"/>
+    <use href="#beta-dart" transform="translate(196 182) rotate(64) translate(0 -56)"/>
+    <use href="#beta-dart" transform="translate(196 182) rotate(128) translate(0 -52)"/>
+    <use href="#beta-dart" transform="translate(196 182) rotate(-64) translate(0 -56)"/>
+    <use href="#beta-dart" transform="translate(196 182) rotate(-128) translate(0 -52)"/>
+  </g>
+  <g class="a a-up d7">
+    <line x1="100" y1="304" x2="292" y2="304" class="sb w2 rc"/>
+    <line x1="100" y1="298" x2="100" y2="310" class="sb w2 rc"/>
+    <line x1="292" y1="298" x2="292" y2="310" class="sb w2 rc"/>
+    <text x="196" y="328" class="t-l mid" style="font-size:11.5px">0.5 &ndash; 2 mm</text>
+    <text x="196" y="350" class="t-m mid" style="font-size:11px">a NET cell is about 20 &micro;m across,</text>
+    <text x="196" y="368" class="t-m mid" style="font-size:11px">so that is 25&ndash;100 cells deep</text>
+  </g>
+  <g class="a a-in d6">
+    <text x="308" y="142" class="t-m" style="font-size:10px;fill:var(--ink)">solid = receptor-</text>
+    <text x="308" y="156" class="t-m" style="font-size:10px;fill:var(--ink)">positive, loaded</text>
+    <text x="308" y="196" class="t-m" style="font-size:10px">dotted = no receptor,</text>
+    <text x="308" y="210" class="t-m" style="font-size:10px">irradiated anyway</text>
+  </g>
+
+  <g class="a a-r d8">
+    <rect x="460" y="66" width="228" height="196" rx="3" class="f1 cut"/>
+    <text x="478" y="92" class="t-k">WHERE ELSE DOSE LANDS</text>
+    <text x="478" y="124" class="t-l" style="font-size:12px">kidneys</text>
+    <text x="478" y="142" class="t-m" style="font-size:11px">tracked by creatinine &amp; eGFR</text>
+    <text x="478" y="176" class="t-l" style="font-size:12px">bone marrow</text>
+    <text x="478" y="194" class="t-m" style="font-size:11px">tracked by full blood count</text>
+    <text x="478" y="228" class="t-l" style="font-size:12px">spleen &amp; liver</text>
+    <text x="478" y="246" class="t-m" style="font-size:11px">normal SSTR2 expression</text>
+  </g>
+  <g class="a a-up d10">
+    <rect x="460" y="286" width="228" height="112" rx="3" class="f3"/>
+    <rect x="460" y="286" width="4" height="112" class="fr"/>
+    <text x="478" y="312" class="t-k">WHAT SPARES THE REST</text>
+    <text x="478" y="338" class="t-m" style="font-size:11px;fill:var(--ink)">1 &#183; the receptor filters it</text>
+    <text x="478" y="360" class="t-m" style="font-size:11px;fill:var(--ink)">2 &#183; range is 2 mm, not 2 cm</text>
+    <text x="478" y="382" class="t-m" style="font-size:11px;fill:var(--ink)">3 &#183; amino acids guard kidneys</text>
+  </g>
+</svg>
+</div>
+<figcaption class="narration">
+  <h2>Crossfire cuts both ways</h2>
+  <p>A &beta;&#8315; particle crosses roughly 0.5&ndash;2&nbsp;mm of tissue &mdash; against a cell diameter of about 20&nbsp;&micro;m, that is dozens of cells deep. So a loaded cell irradiates its neighbours, including the receptor&#8209;negative ones the drug could never have reached directly. That crossfire is a large part of why the therapy works on a heterogeneous tumour. The same physics explains the toxicity: dose lands in kidney, marrow, spleen and liver, and those organs &mdash; not the tumour &mdash; are what caps the total amount that can be given.</p>
+</figcaption>
+</figure>
+
+<!-- ============ 10 ============ -->
+<figure class="sc" data-dur="12">
+<div class="svg-hold">
+<svg viewBox="0 0 720 420" role="img" aria-label="Four cycles of 7.4 gigabecquerel eight weeks apart, totalling 29.6 gigabecquerel over about eight months, with blood and kidney checks before each cycle and a SPECT CT scan the day after each dose.">
+  <rect width="720" height="420" class="f2"/>
+  <text x="34" y="44" class="t-k">SCENE 10 &#183; FOUR CYCLES, EIGHT WEEKS APART</text>
+
+  <line x1="60" y1="176" x2="668" y2="176" class="ss w2 rc a a-in d1"/>
+  <g class="a a-up d2">
+    <rect x="62" y="96" width="96" height="62" rx="3" class="f1 cut"/><rect x="62" y="96" width="96" height="5" class="fl"/>
+    <text x="110" y="124" class="t-l mid" style="font-size:12px">cycle 1</text>
+    <text x="110" y="144" class="t-m mid" style="font-size:11px">7.4 GBq</text>
+    <circle cx="110" cy="176" r="6" class="fl"/>
+    <text x="110" y="202" class="t-m mid" style="font-size:11px">week 0</text>
+    <text x="110" y="230" class="t-n mid" style="font-size:17px">7.4</text>
+  </g>
+  <g class="a a-up d4">
+    <rect x="222" y="96" width="96" height="62" rx="3" class="f1 cut"/><rect x="222" y="96" width="96" height="5" class="fl"/>
+    <text x="270" y="124" class="t-l mid" style="font-size:12px">cycle 2</text>
+    <text x="270" y="144" class="t-m mid" style="font-size:11px">7.4 GBq</text>
+    <circle cx="270" cy="176" r="6" class="fl"/>
+    <text x="270" y="202" class="t-m mid" style="font-size:11px">week 8</text>
+    <text x="270" y="230" class="t-n mid" style="font-size:17px">14.8</text>
+  </g>
+  <g class="a a-up d6">
+    <rect x="382" y="96" width="96" height="62" rx="3" class="f1 cut"/><rect x="382" y="96" width="96" height="5" class="fl"/>
+    <text x="430" y="124" class="t-l mid" style="font-size:12px">cycle 3</text>
+    <text x="430" y="144" class="t-m mid" style="font-size:11px">7.4 GBq</text>
+    <circle cx="430" cy="176" r="6" class="fl"/>
+    <text x="430" y="202" class="t-m mid" style="font-size:11px">week 16</text>
+    <text x="430" y="230" class="t-n mid" style="font-size:17px">22.2</text>
+  </g>
+  <g class="a a-up d8">
+    <rect x="542" y="96" width="96" height="62" rx="3" class="f1 cut"/><rect x="542" y="96" width="96" height="5" class="fl"/>
+    <text x="590" y="124" class="t-l mid" style="font-size:12px">cycle 4</text>
+    <text x="590" y="144" class="t-m mid" style="font-size:11px">7.4 GBq</text>
+    <circle cx="590" cy="176" r="6" class="fl"/>
+    <text x="590" y="202" class="t-m mid" style="font-size:11px">week 24</text>
+    <text x="590" y="230" class="t-n mid" style="font-size:17px">29.6</text>
+  </g>
+  <text x="34" y="234" class="t-k a a-in d2">CUMULATIVE GBq</text>
+
+  <g class="a a-up d10">
+    <rect x="34" y="266" width="316" height="132" rx="3" class="f1 cut"/>
+    <text x="54" y="292" class="t-k">BEFORE EACH CYCLE</text>
+    <text x="54" y="318" class="t-m" style="font-size:11px;fill:var(--ink)">full blood count &#183; creatinine &amp; eGFR &#183; LFTs</text>
+    <text x="54" y="340" class="t-m" style="font-size:11px;fill:var(--ink)">dose delayed if counts have not recovered</text>
+    <line x1="54" y1="356" x2="330" y2="356" class="sh w1"/>
+    <text x="54" y="380" class="t-m" style="font-size:11px">Restaging imaging after cycles 2 and 4.</text>
+  </g>
+  <g class="a a-up d12">
+    <rect x="370" y="266" width="318" height="132" rx="3" class="f1 cut"/>
+    <text x="390" y="292" class="t-k">24 HOURS AFTER EACH DOSE</text>
+    <g class="a-blip">
+      <rect x="390" y="306" width="54" height="36" rx="3" class="f3"/>
+      <path d="M417 342 v14" class="fn ss w2 rc"/>
+      <path d="M402 356 h30" class="fn ss w2 rc"/>
+    </g>
+    <text x="458" y="322" class="t-l" style="font-size:12px">SPECT/CT</text>
+    <text x="458" y="342" class="t-m" style="font-size:11px">on the 208 keV &gamma; emission</text>
+    <text x="458" y="362" class="t-m" style="font-size:11px">confirms where the dose went</text>
+    <text x="390" y="386" class="t-m" style="font-size:11px">A pure &beta; emitter could not be checked.</text>
+  </g>
+</svg>
+</div>
+<figcaption class="narration">
+  <h2>Four doses, then wait</h2>
+  <p>The standard course is four infusions of 7.4&nbsp;GBq, eight weeks apart &mdash; 29.6&nbsp;GBq over roughly eight months. The eight&#8209;week gap exists so marrow counts and kidney function can recover and be checked before the next dose; counts that have not come back mean a delay or a reduction. And because lutetium&#8209;177 emits imaging gammas alongside its &beta;&#8315;, a SPECT/CT the following day shows exactly where the dose settled. That is an unusual luxury: most radiotherapy is planned, not verified after the fact.</p>
+</figcaption>
+</figure>
+
+<!-- ============ 11 ============ -->
+<figure class="sc" data-dur="13">
+<div class="svg-hold">
+<svg viewBox="0 0 720 420" role="img" aria-label="NETTER-1 trial results: at month 20, 65.2 percent of patients on Lu-177 DOTATATE were progression free versus 10.8 percent on high-dose octreotide, hazard ratio 0.21. Response rate 18 versus 3 percent. Median overall survival 48.0 versus 36.3 months, not statistically significant.">
+  <rect width="720" height="420" class="f2"/>
+  <text x="34" y="44" class="t-k">SCENE 11 &#183; WHAT THE TRIAL SHOWED</text>
+
+  <g class="a a-in d1">
+    <text x="34" y="80" class="t-m" style="font-size:11.5px">NETTER-1 &#183; 229 patients &#183; progressive, well-differentiated midgut NET (Ki-67 &le; 20%) &#183; NEJM 2017</text>
+    <text x="34" y="112" class="t-k">PROGRESSION-FREE AT MONTH 20</text>
+  </g>
+
+  <g class="a a-in d2">
+    <line x1="238" y1="130" x2="238" y2="236" class="sh w1"/>
+    <line x1="338" y1="130" x2="338" y2="236" class="sh w1"/>
+    <line x1="438" y1="130" x2="438" y2="236" class="sh w1"/>
+    <line x1="538" y1="130" x2="538" y2="236" class="sh w1"/>
+    <line x1="638" y1="130" x2="638" y2="236" class="sh w1"/>
+    <text x="238" y="252" class="t-m mid" style="font-size:10.5px">0%</text>
+    <text x="338" y="252" class="t-m mid" style="font-size:10.5px">25%</text>
+    <text x="438" y="252" class="t-m mid" style="font-size:10.5px">50%</text>
+    <text x="538" y="252" class="t-m mid" style="font-size:10.5px">75%</text>
+    <text x="638" y="252" class="t-m mid" style="font-size:10.5px">100%</text>
+  </g>
+
+  <g class="a a-l d3">
+    <text x="226" y="160" class="t-l end" style="font-size:12px">Lu-177 DOTATATE</text>
+    <text x="226" y="176" class="t-m end" style="font-size:10.5px">+ octreotide 30 mg</text>
+    <rect x="238" y="140" width="261" height="34" rx="2" class="fl"/>
+    <text x="513" y="163" class="t-n" style="font-size:19px;fill:var(--lu)">65.2%</text>
+  </g>
+  <g class="a a-l d5">
+    <text x="226" y="212" class="t-l end" style="font-size:12px">octreotide LAR</text>
+    <text x="226" y="228" class="t-m end" style="font-size:10.5px">60 mg, high dose</text>
+    <rect x="238" y="192" width="43" height="34" rx="2" class="f3"/>
+    <rect x="238" y="192" width="43" height="34" rx="2" class="fn ss w1"/>
+    <text x="295" y="215" class="t-n" style="font-size:19px;fill:var(--ink-soft)">10.8%</text>
+  </g>
+
+  <g class="a a-r d7">
+    <rect x="34" y="282" width="204" height="106" rx="3" class="f1 cut"/>
+    <text x="54" y="308" class="t-k">HAZARD RATIO</text>
+    <text x="54" y="344" class="t-n" style="fill:var(--lu)">0.21</text>
+    <text x="54" y="366" class="t-m" style="font-size:11px">95% CI 0.13&ndash;0.33</text>
+    <text x="54" y="382" class="t-m" style="font-size:11px">79% lower progression risk</text>
+  </g>
+  <g class="a a-r d9">
+    <rect x="258" y="282" width="204" height="106" rx="3" class="f1 cut"/>
+    <text x="278" y="308" class="t-k">OBJECTIVE RESPONSE</text>
+    <text x="278" y="344" class="t-n">18%</text>
+    <text x="340" y="344" class="t-m">vs 3%</text>
+    <text x="278" y="366" class="t-m" style="font-size:11px">shrinkage by RECIST</text>
+    <text x="278" y="382" class="t-m" style="font-size:10.5px">benefit is chiefly stability</text>
+  </g>
+  <g class="a a-r d11">
+    <rect x="482" y="282" width="206" height="106" rx="3" class="f1 cut"/>
+    <text x="502" y="308" class="t-k">MEDIAN OVERALL SURVIVAL</text>
+    <text x="502" y="344" class="t-n">48.0</text>
+    <text x="558" y="344" class="t-m">vs 36.3 months</text>
+    <text x="502" y="366" class="t-m" style="font-size:11px">HR 0.84 &#183; p = 0.30</text>
+    <text x="502" y="382" class="t-m" style="font-size:11px;fill:var(--alert)">difference not significant</text>
+  </g>
+</svg>
+</div>
+<figcaption class="narration">
+  <h2>The evidence, stated honestly</h2>
+  <p>NETTER&#8209;1 randomised 229 patients with progressive, well&#8209;differentiated midgut NETs to Lu&#8209;177 DOTATATE or high&#8209;dose octreotide. The progression&#8209;free survival result was emphatic: 65.2% versus 10.8% progression&#8209;free at 20 months, hazard ratio 0.21. But note what the numbers do and do not say. Objective shrinkage happened in 18% &mdash; most of the benefit is disease held still, not disease removed. And at final analysis, median overall survival was 48.0 versus 36.3&nbsp;months, a gap that did not reach statistical significance.</p>
+</figcaption>
+</figure>
+
+<!-- ============ 12 ============ -->
+<figure class="sc" data-dur="14">
+<div class="svg-hold">
+<svg viewBox="0 0 720 420" role="img" aria-label="After treatment: response is read over months on imaging and tumour markers. Short-term effects are fatigue, nausea and low blood counts; the long-term concern is a roughly 2 percent risk of myelodysplastic syndrome or leukaemia. Household radiation precautions apply for the first few days.">
+  <rect width="720" height="420" class="f2"/>
+  <text x="34" y="44" class="t-k">SCENE 12 &#183; AFTERWARDS</text>
+
+  <g class="a a-in d1">
+    <line x1="60" y1="152" x2="430" y2="152" class="ss w2 rc"/>
+    <circle cx="70" cy="152" r="30" class="fts"/><circle cx="70" cy="152" r="30" class="fn st w1"/>
+    <circle cx="190" cy="152" r="28" class="fts a a-pop d3"/><circle cx="190" cy="152" r="28" class="fn st w1 a a-pop d3"/>
+    <circle cx="310" cy="152" r="22" class="fts a a-pop d5"/><circle cx="310" cy="152" r="22" class="fn st w1 a a-pop d5"/>
+    <circle cx="420" cy="152" r="15" class="fts a a-pop d7"/><circle cx="420" cy="152" r="15" class="fn st w1 a a-pop d7"/>
+    <text x="70" y="212" class="t-m mid" style="font-size:11px">baseline</text>
+    <text x="190" y="212" class="t-m mid" style="font-size:11px">month 3</text>
+    <text x="310" y="212" class="t-m mid" style="font-size:11px">month 6</text>
+    <text x="420" y="212" class="t-m mid" style="font-size:11px">month 12</text>
+    <text x="60" y="96" class="t-l" style="font-size:12px">Response is slow, because the tumour is slow</text>
+    <text x="60" y="114" class="t-m" style="font-size:11px">CT or MRI every 3 months &#183; chromogranin A &#183; urinary 5-HIAA</text>
+  </g>
+
+  <g class="a a-r d4">
+    <rect x="466" y="66" width="222" height="160" rx="3" class="f1 cut"/>
+    <text x="486" y="92" class="t-k">FIRST DAYS AT HOME</text>
+    <text x="486" y="118" class="t-m" style="font-size:11px;fill:var(--ink)">sleep alone for a few nights</text>
+    <text x="486" y="140" class="t-m" style="font-size:11px;fill:var(--ink)">keep distance from children</text>
+    <text x="486" y="162" class="t-m" style="font-size:11px;fill:var(--ink)">sit to urinate, flush twice</text>
+    <text x="486" y="184" class="t-m" style="font-size:11px;fill:var(--ink)">drink well; it clears in urine</text>
+    <text x="486" y="210" class="t-m" style="font-size:11px">Durations are set locally.</text>
+  </g>
+
+  <g class="a a-up d8">
+    <rect x="34" y="248" width="316" height="150" rx="3" class="f1 cut"/>
+    <text x="54" y="274" class="t-k">EARLY &#183; WEEKS</text>
+    <text x="54" y="300" class="t-m" style="font-size:11.5px;fill:var(--ink)">nausea, mostly from the amino acids</text>
+    <text x="54" y="322" class="t-m" style="font-size:11.5px;fill:var(--ink)">fatigue, abdominal pain</text>
+    <text x="54" y="344" class="t-m" style="font-size:11.5px;fill:var(--ink)">grade 3&ndash;4 lymphopenia ~9%</text>
+    <text x="54" y="366" class="t-m" style="font-size:11.5px;fill:var(--ink)">thrombocytopenia ~2%, neutropenia ~1%</text>
+    <text x="54" y="388" class="t-m" style="font-size:11px">carcinoid crisis &lt; 1%, watched for</text>
+  </g>
+  <g class="a a-up d10">
+    <rect x="370" y="248" width="318" height="150" rx="3" class="f1 cut"/>
+    <rect x="370" y="248" width="4" height="150" class="fa"/>
+    <text x="390" y="274" class="t-k">LATE &#183; YEARS</text>
+    <text x="390" y="304" class="t-n" style="font-size:21px;fill:var(--alert)">~2%</text>
+    <text x="442" y="304" class="t-m" style="font-size:11.5px">myelodysplastic syndrome</text>
+    <text x="442" y="320" class="t-m" style="font-size:11.5px">or acute leukaemia</text>
+    <text x="390" y="348" class="t-m" style="font-size:11px;fill:var(--ink)">renal function is monitored for years</text>
+    <text x="390" y="372" class="t-m" style="font-size:11px">Which is why blood counts keep being</text>
+    <text x="390" y="388" class="t-m" style="font-size:11px">checked long after the last dose.</text>
+  </g>
+</svg>
+</div>
+<figcaption class="narration">
+  <h2>Reading the result takes months</h2>
+  <p>A tumour that divides slowly also shrinks slowly, so nothing useful is visible at week&nbsp;two. Response is read over months on CT or MRI alongside chromogranin&nbsp;A and urinary 5&#8209;HIAA, and stable disease counts as success. In the short term expect fatigue, nausea from the amino acids, and a dip in blood counts. The long&#8209;term concern is a roughly 2% risk of myelodysplastic syndrome or acute leukaemia, which is why the blood counts keep being checked years after the last infusion.</p>
+</figcaption>
+</figure>
+
+<div class="stage-tag" id="tag">01 / 12</div>
+</div>
+
+<div class="transport">
+  <button class="btn primary" id="play" type="button" aria-label="Play the reel">
+    <svg width="10" height="12" viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0 L10 6 L0 12 Z" fill="currentColor"/></svg>
+    <span id="playLabel">Play</span>
+  </button>
+  <button class="btn" id="prev" type="button" aria-label="Previous scene">&larr;</button>
+  <button class="btn" id="next" type="button" aria-label="Next scene">&rarr;</button>
+  <div class="rail" role="progressbar" aria-label="Reel progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="rail"><div class="rail-fill" id="railFill"></div></div>
+  <span class="clock" id="clock">0:00 / 2:29</span>
+  <span class="pan-hint">drag the scene sideways to see all of it</span>
+</div>
+
+<nav class="chapters" id="chapters" aria-label="Scenes"></nav>
+</div>
+
+<section class="notes">
+
+  <div class="note">
+    <h3>By the numbers</h3>
+    <div class="tbl-scroll">
+    <table class="tbl">
+      <thead><tr><th>Quantity</th><th>Value</th><th>Why it matters</th></tr></thead>
+      <tbody>
+        <tr><td>Physical half-life</td><td class="num">6.65 days</td><td>Long enough to irradiate for weeks; short enough that the patient is not a radiation source for months.</td></tr>
+        <tr><td>Mean &beta;&#8315; energy</td><td class="num">134 keV</td><td>Maximum 498 keV. This is the energy doing the DNA damage.</td></tr>
+        <tr><td>&beta;&#8315; tissue range</td><td class="num">0.5&ndash;2 mm</td><td>Mean about 0.23 mm. Spans 25&ndash;100 cell diameters, which produces the crossfire effect.</td></tr>
+        <tr><td>&gamma; emissions</td><td class="num">113 &amp; 208 keV</td><td>6.2% and 10.4% abundance &mdash; enough to image the therapy itself on SPECT/CT.</td></tr>
+        <tr><td>Dose per cycle</td><td class="num">7.4 GBq</td><td>200 mCi, infused over 30 minutes.</td></tr>
+        <tr><td>Cycles</td><td class="num">4, q8 weeks</td><td>29.6 GBq cumulative across roughly 8 months.</td></tr>
+        <tr><td>Renal protection</td><td class="num">2.5% AA, 4 h</td><td>Lysine + arginine, starting 30 min before the dose, to block megalin-mediated tubular reabsorption.</td></tr>
+        <tr><td>Eligibility threshold</td><td class="num">Krenning 3&ndash;4</td><td>Uptake on Ga-68 DOTATATE PET at or above normal liver.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="note">
+    <h3>Where this sits for a grade 1, stage 4 NET</h3>
+    <p>Lu&#8209;177 DOTATATE is not usually the first thing tried in grade&nbsp;1 disease. A slow, somatostatin&#8209;receptor&#8209;positive tumour typically starts on a long&#8209;acting somatostatin analogue, which controls hormone symptoms and slows growth. PRRT enters the picture when that stops working.</p>
+    <div class="deck">
+      <div class="card"><h4>Step 1</h4><p><strong>Somatostatin analogue.</strong> Octreotide LAR or lanreotide. Symptom control plus an antiproliferative effect.</p></div>
+      <div class="card"><h4>Step 2</h4><p><strong>Documented progression.</strong> Radiological progression on SSA is the usual trigger to escalate.</p></div>
+      <div class="card"><h4>Step 3</h4><p><strong>Ga-68 DOTATATE PET.</strong> Confirms the target exists and is widespread enough to be worth irradiating.</p></div>
+      <div class="card"><h4>Step 4</h4><p><strong>Four cycles of PRRT.</strong> With SSA continued between cycles and afterwards.</p></div>
+    </div>
+  </div>
+
+  <div class="note">
+    <h3>What this page simplifies</h3>
+    <p>Three honest caveats. First, NETTER&#8209;1 enrolled midgut tumours with Ki&#8209;67 up to 20%, so it is a grade&nbsp;1 <em>and</em> grade&nbsp;2 population &mdash; the trial was not restricted to grade&nbsp;1, and results for pancreatic primaries come from other datasets. Second, "grade 1, stage 4" is not by itself an indication: progression, receptor positivity, adequate marrow and kidney function, and performance status all gate the decision. Third, dosimetry is personalised in many centres rather than fixed at four flat doses, and retreatment after progression is an active question rather than settled practice.</p>
+  </div>
+
+  <div class="note">
+    <h3>Terms used above</h3>
+    <dl class="gloss">
+      <dt>PRRT</dt><dd>Peptide receptor radionuclide therapy &mdash; a targeting peptide carrying a therapeutic radionuclide.</dd>
+      <dt>SSTR2</dt><dd>Somatostatin receptor subtype 2, the surface protein overexpressed on well-differentiated NETs.</dd>
+      <dt>DOTA</dt><dd>A macrocyclic chelator whose four arms grip the metal ion so it cannot dissociate in circulation.</dd>
+      <dt>Ki-67</dt><dd>The fraction of tumour cells staining for a proliferation marker; the basis of NET grading.</dd>
+      <dt>Krenning score</dt><dd>A 0&ndash;4 visual grading of tracer uptake relative to normal liver and spleen.</dd>
+      <dt>Crossfire</dt><dd>Irradiation of cells adjacent to a loaded cell, because the &beta;&#8315; range exceeds one cell diameter.</dd>
+      <dt>GBq</dt><dd>Gigabecquerel, a billion decays per second &mdash; the unit the dose is prescribed in.</dd>
+      <dt>5-HIAA</dt><dd>A serotonin metabolite measured in urine, used as a tumour marker in midgut NETs.</dd>
+    </dl>
+  </div>
+
+  <div class="note">
+    <h3>Sources</h3>
+    <p class="src">Strosberg J et al. <em>Phase 3 trial of <sup>177</sup>Lu-Dotatate for midgut neuroendocrine tumors.</em> N Engl J Med 2017;376:125&ndash;135 &mdash; and the final overall-survival analysis, Lancet Oncol 2021;22:1752&ndash;1763. Lutathera prescribing information (dose, amino-acid infusion, monitoring). Bodei L et al. on dosimetry and renal protection in PRRT. WHO 2022 classification of neuroendocrine neoplasms for grading. Figures quoted here are rounded to what a clinical conversation would use.</p>
+  </div>
+
+  <div class="disclaimer">
+    <strong>Educational material</strong>
+    This page explains a mechanism. It is not medical advice, not a treatment protocol, and not a substitute for the judgement of a neuroendocrine tumour multidisciplinary team. Eligibility, dosing, holds and monitoring for any individual patient are decided by that team against local protocol.
+  </div>
+
+</section>
+</div>
+
+<script>
+(function(){
+  var stage = document.getElementById('stage');
+  var scenes = Array.prototype.slice.call(stage.querySelectorAll('.sc'));
+  var durs = scenes.map(function(s){ return parseFloat(s.getAttribute('data-dur')) || 10; });
+  var total = durs.reduce(function(a,b){ return a+b; }, 0);
+  var offsets = [];
+  durs.reduce(function(acc, d, i){ offsets[i] = acc; return acc + d; }, 0);
+
+  var playBtn = document.getElementById('play');
+  var playLabel = document.getElementById('playLabel');
+  var railFill = document.getElementById('railFill');
+  var rail = document.getElementById('rail');
+  var clock = document.getElementById('clock');
+  var tag = document.getElementById('tag');
+  var chapters = document.getElementById('chapters');
+
+  var idx = 0, elapsed = 0, playing = false, last = 0, raf = 0;
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function pad(n){ return n < 10 ? '0' + n : '' + n; }
+  function fmt(s){ s = Math.max(0, Math.round(s)); return Math.floor(s/60) + ':' + pad(s % 60); }
+
+  var tabs = scenes.map(function(sc, i){
+    var h2 = sc.querySelector('h2');
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'tab';
+    b.innerHTML = '<b>' + pad(i + 1) + '</b>' + (h2 ? h2.textContent : 'Scene ' + (i + 1));
+    b.addEventListener('click', function(){ go(i); });
+    chapters.appendChild(b);
+    return b;
+  });
+
+  function paint(){
+    var t = offsets[idx] + Math.min(elapsed, durs[idx]);
+    var pct = total ? (t / total) * 100 : 0;
+    railFill.style.width = pct.toFixed(2) + '%';
+    rail.setAttribute('aria-valuenow', Math.round(pct));
+    clock.textContent = fmt(t) + ' / ' + fmt(total);
+    tag.textContent = pad(idx + 1) + ' / ' + pad(scenes.length);
+  }
+
+  function show(i){
+    scenes[idx].classList.remove('is-active');
+    idx = i;
+    scenes[idx].classList.add('is-active');
+    tabs.forEach(function(t, n){
+      if (n === idx) { t.setAttribute('aria-current', 'true'); }
+      else { t.removeAttribute('aria-current'); }
+    });
+    elapsed = 0;
+    paint();
+  }
+
+  function go(i){
+    if (i < 0) i = 0;
+    if (i > scenes.length - 1) i = scenes.length - 1;
+    if (i !== idx) show(i); else { elapsed = 0; paint(); }
+  }
+
+  function setPlaying(on){
+    playing = on;
+    if (on) { stage.classList.remove('paused'); }
+    else { stage.classList.add('paused'); }
+    playLabel.textContent = on ? 'Pause' : (idx === scenes.length - 1 && elapsed >= durs[idx] ? 'Replay' : 'Play');
+    playBtn.setAttribute('aria-label', on ? 'Pause the reel' : 'Play the reel');
+    playBtn.querySelector('svg').innerHTML = on
+      ? '<rect x="0" y="0" width="3.5" height="12" fill="currentColor"/><rect x="6.5" y="0" width="3.5" height="12" fill="currentColor"/>'
+      : '<path d="M0 0 L10 6 L0 12 Z" fill="currentColor"/>';
+    if (on) { last = 0; raf = requestAnimationFrame(tick); }
+    else if (raf) { cancelAnimationFrame(raf); raf = 0; }
+  }
+
+  function tick(ts){
+    if (!playing) return;
+    if (!last) last = ts;
+    var dt = Math.min((ts - last) / 1000, 0.5);
+    last = ts;
+    elapsed += dt;
+    if (elapsed >= durs[idx]) {
+      if (idx < scenes.length - 1) { show(idx + 1); }
+      else { elapsed = durs[idx]; setPlaying(false); paint(); return; }
+    }
+    paint();
+    raf = requestAnimationFrame(tick);
+  }
+
+  playBtn.addEventListener('click', function(){
+    if (!playing && idx === scenes.length - 1 && elapsed >= durs[idx]) { show(0); }
+    setPlaying(!playing);
+  });
+  document.getElementById('prev').addEventListener('click', function(){
+    if (elapsed > 1.2) { elapsed = 0; show(idx); } else { go(idx - 1); }
+  });
+  document.getElementById('next').addEventListener('click', function(){ go(idx + 1); });
+
+  rail.addEventListener('click', function(e){
+    var r = rail.getBoundingClientRect();
+    var t = ((e.clientX - r.left) / r.width) * total;
+    for (var i = scenes.length - 1; i >= 0; i--) {
+      if (t >= offsets[i]) { show(i); elapsed = Math.min(t - offsets[i], durs[i]); paint(); break; }
+    }
+  });
+
+  document.addEventListener('keydown', function(e){
+    var tagName = (e.target && e.target.tagName || '').toLowerCase();
+    if (tagName === 'input' || tagName === 'textarea') return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); go(idx + 1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); go(idx - 1); }
+    else if (e.key === ' ' || e.key === 'k') {
+      if (tagName === 'button') return;
+      e.preventDefault();
+      setPlaying(!playing);
+    }
+  });
+
+  scenes[0].classList.add('is-active');
+  tabs[0].setAttribute('aria-current', 'true');
+  paint();
+})();
+</script>
