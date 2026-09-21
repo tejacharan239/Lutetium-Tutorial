@@ -31,8 +31,8 @@ def s01():
     s += contours(-158, -158, 316, O, 10)
     s += A(room(-268, -76, 80, 80, O, P['blush'], P['blushD'])
            + crate(-248, -56, O, 15, col=P['cream']) + figure(-228, -30, 0, O, P['navy'], P['cream'], .85), 'a a-l d6')
-    s += A(room(128, -196, 78, 78, O, P['creamL'], P['creamD'])
-           + crate(148, -176, O, 14, col=P['teal']) + figure(168, -152, 0, O, P['rust'], P['cream'], .85), 'a a-r d7')
+    s += A(room(104, -172, 74, 74, O, P['creamD'], shade(P['creamD'], .86))
+           + crate(122, -154, O, 14, col=P['teal']) + figure(142, -132, 0, O, P['rust'], P['cream'], .85), 'a a-r d7')
     s += A(lightcone(0, 0, 58, O, -104, -104, 64, P['paper']), 'a a-in d5')
     hero = cylinder(0, 0, 62, 0, 10, P['navyL'], shade(P['navy'], .78), O)
     hero += cylinder(0, 0, 52, 10, 10, P['navyXL'], shade(P['navyL'], .78), O)
@@ -283,22 +283,25 @@ def s11():
     O = (352, 300); s = ''
     s += floor(-160, -160, 320, 2, P['navy'], O, 9)
     def tower(x, y, pct, col, colD, label):
-        h = pct * 2.35
+        h = pct * 1.9                      # one scale for both towers, so the ratio is honest
         g = cylinder(x, y, 30, 0, h, col, colD, O)
         g += disc(x, y, 30, shade(col, 1.2), h, O)
         g += ring(x, y, 30, h, P['paper'], 1.5, O, ' opacity=".7"')
         for k in range(1, int(h // 26) + 1):
             g += ring(x, y, 30, k * 26, P['paper'], 1.0, O, ' opacity=".35"')
         px, py = pt(x, y, h, O)
+        ty = py - 30 * EY - 16             # clear of the cap ellipse
+        g += ('<rect x="%.0f" y="%.0f" width="86" height="30" fill="%s" stroke="%s" stroke-width="1.5"/>'
+              % (px - 43, ty - 21, P['cream'], P['ink']))
         g += ('<text x="%.0f" y="%.0f" text-anchor="middle" font-family="IBM Plex Mono, monospace" '
-              'font-size="17" font-weight="600" fill="%s">%s</text>' % (px, py - 16, P['ink'], label))
+              'font-size="17" font-weight="600" fill="%s">%s</text>' % (px, ty, P['ink'], label))
         return g
     s += A(tower(-58, 58, 65.2, P['gold'], P['goldD'], '65.2%'), 'a a-up d1')
     s += A(tower(76, -76, 10.8, P['navyXL'], P['navyL'], '10.8%'), 'a a-up d3')
     s += A(figure(-6, 6, 0, O, P['rust'], P['cream'], .95)
            + figure(14, 26, 0, O, P['teal'], P['cream'], .95), 'a a-in d5')
-    s += A(plate(18, 34, 236, 72, 'Lu-177 DOTATATE', ['progression-free, month 20'], P['gold']), 'a a-l d2')
-    s += A(plate(470, 34, 226, 72, 'OCTREOTIDE 60 mg', ['same endpoint'], P['navyL']), 'a a-r d4')
+    s += A(plate(18, 54, 236, 70, 'Lu-177 DOTATATE', ['progression-free, month 20'], P['gold']), 'a a-l d2')
+    s += A(plate(470, 54, 226, 70, 'OCTREOTIDE 60 mg', ['same endpoint'], P['navyL']), 'a a-r d4')
     s += A(plate(20, 300, 210, 84, 'HAZARD RATIO', ['0.21 (0.13-0.33)'], P['gold']), 'a a-up d6')
     s += A(plate(244, 300, 210, 84, 'RESPONSE', ['18% vs 3% shrank'], P['teal']), 'a a-up d7')
     s += A(plate(468, 300, 228, 84, 'SURVIVAL', ['48.0 vs 36.3 months', 'not significant'], P['rust']), 'a a-up d8')
