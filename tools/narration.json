@@ -1,0 +1,56 @@
+{
+ "narration": [
+  {
+   "h2": "One molecule, three jobs",
+   "p": "Lutetium&#8209;177 DOTATATE &mdash; marketed as Lutathera &mdash; is a synthetic somatostatin analogue welded to a radioactive metal. The peptide half decides <em>where</em> the drug goes. The metal half decides <em>what happens</em> when it gets there. Everything that follows is a consequence of those two halves being permanently bolted together."
+  },
+  {
+   "h2": "Slow, and everywhere",
+   "p": "Grade&nbsp;1 means a Ki&#8209;67 index of 2% or less and fewer than two mitoses per 2&nbsp;mm&#178; &mdash; a well&#8209;differentiated tumour that divides reluctantly. Stage&nbsp;4 means it has already travelled, in most midgut cases to the liver. That pairing is the whole problem: conventional chemotherapy needs cells that divide, and surgery needs disease it can reach. Neither condition holds here, which is what leaves room for a systemic treatment that homes in on something other than proliferation."
+  },
+  {
+   "h2": "The receptor is the address",
+   "p": "Well&#8209;differentiated NET cells keep the machinery of the neuroendocrine cells they came from, including somatostatin receptor subtype&nbsp;2 &mdash; and they carry ten to a hundred times more of it than normal tissue. Nothing about the tumour's growth rate is being exploited here; the drug is aimed at a surface protein. This is why the arithmetic runs backwards from most oncology: a grade&nbsp;1 tumour is a <em>better</em> target than a grade&nbsp;3 one, because differentiation and receptor density travel together."
+  },
+  {
+   "h2": "Address, cage, payload",
+   "p": "Tyr&#179;&#8209;octreotate is an eight&#8209;residue somatostatin analogue that locks onto SSTR2. DOTA is a macrocyclic chelator whose four arms clamp a metal ion. Lutetium&#8209;177 is a &beta;&#8315; emitter with a 6.65&#8209;day half&#8209;life &mdash; long enough to keep irradiating for weeks, short enough that the patient is not radioactive for months. The chelation is not a detail: an unchelated lutetium ion behaves like calcium and heads for bone marrow, which is exactly the tissue you are trying to protect."
+  },
+  {
+   "h2": "Look before you shoot",
+   "p": "Swap the payload and the same peptide becomes a diagnostic: gallium&#8209;68 DOTATATE is a PET tracer that maps receptor density lesion by lesion. This is what \"theranostics\" actually means &mdash; the scan and the treatment share a targeting molecule, so the scan genuinely predicts where the dose will land. Uptake is graded on the Krenning scale, and only grade&nbsp;3 or&nbsp;4 &mdash; uptake exceeding normal liver &mdash; qualifies. A lesion that stays dark on the PET will not hold the therapy either."
+  },
+  {
+   "h2": "Why the drip has two bags",
+   "p": "The kidney is the dose&#8209;limiting organ, because its proximal tubule reabsorbs small peptides through the megalin receptor and would hoard the radiopeptide. So a 2.5% lysine&ndash;arginine infusion starts 30&nbsp;minutes ahead and runs for about four hours, saturating that route so the drug leaves in the urine instead of lodging in the tubule. The therapy itself is undramatic: 7.4&nbsp;GBq over half an hour. Long&#8209;acting octreotide is held for at least four weeks beforehand &mdash; it binds the same receptor, and would occupy the parking space."
+  },
+  {
+   "h2": "Swallowed, then stranded",
+   "p": "Binding is only the start. SSTR2 is an internalising receptor: once occupied, the whole receptor&ndash;ligand pair is drawn into the cell inside a vesicle, which fuses with a lysosome. Enzymes chew up the peptide, but the DOTA&ndash;lutetium complex is charged and cannot get back out across the membrane. It sits in the tumour cell for days while the blood clears the unbound drug in hours. That difference between what the tumour keeps and what the body flushes is the entire therapeutic margin."
+  },
+  {
+   "h2": "Electrons, radicals, broken DNA",
+   "p": "Each decay throws off a single electron averaging 134&nbsp;keV. Most of the damage it does is indirect: it ionises water into hydroxyl radicals that attack DNA nearby. Some is direct. What matters is the double&#8209;strand break &mdash; both rails of the helix cut at the same point, leaving no intact template to copy from. Single breaks get repaired; double breaks accumulate, and past a threshold the cell triggers apoptosis. Because the isotope keeps decaying for weeks, this is a slow continuous exposure rather than a single blast, which is how a tumour with almost nothing in cell cycle still ends up lethally damaged."
+  },
+  {
+   "h2": "Crossfire cuts both ways",
+   "p": "A &beta;&#8315; particle crosses roughly 0.5&ndash;2&nbsp;mm of tissue &mdash; against a cell diameter of about 20&nbsp;&micro;m, that is dozens of cells deep. So a loaded cell irradiates its neighbours, including the receptor&#8209;negative ones the drug could never have reached directly. That crossfire is a large part of why the therapy works on a heterogeneous tumour. The same physics explains the toxicity: dose lands in kidney, marrow, spleen and liver, and those organs &mdash; not the tumour &mdash; are what caps the total amount that can be given."
+  },
+  {
+   "h2": "Four doses, then wait",
+   "p": "The standard course is four infusions of 7.4&nbsp;GBq, eight weeks apart &mdash; 29.6&nbsp;GBq over roughly eight months. The eight&#8209;week gap exists so marrow counts and kidney function can recover and be checked before the next dose; counts that have not come back mean a delay or a reduction. And because lutetium&#8209;177 emits imaging gammas alongside its &beta;&#8315;, a SPECT/CT the following day shows exactly where the dose settled. That is an unusual luxury: most radiotherapy is planned, not verified after the fact."
+  },
+  {
+   "h2": "The evidence, stated honestly",
+   "p": "NETTER&#8209;1 randomised 229 patients with progressive, well&#8209;differentiated midgut NETs to Lu&#8209;177 DOTATATE or high&#8209;dose octreotide. The progression&#8209;free survival result was emphatic: 65.2% versus 10.8% progression&#8209;free at 20 months, hazard ratio 0.21. But note what the numbers do and do not say. Objective shrinkage happened in 18% &mdash; most of the benefit is disease held still, not disease removed. And at final analysis, median overall survival was 48.0 versus 36.3&nbsp;months, a gap that did not reach statistical significance."
+  },
+  {
+   "h2": "Reading the result takes months",
+   "p": "A tumour that divides slowly also shrinks slowly, so nothing useful is visible at week&nbsp;two. Response is read over months on CT or MRI alongside chromogranin&nbsp;A and urinary 5&#8209;HIAA, and stable disease counts as success. In the short term expect fatigue, nausea from the amino acids, and a dip in blood counts. The long&#8209;term concern is a roughly 2% risk of myelodysplastic syndrome or acute leukaemia, which is why the blood counts keep being checked years after the last infusion."
+  },
+  {
+   "h2": "Educational material",
+   "p": "This page explains a mechanism. It is not medical advice, not a treatment protocol, and not a substitute for the judgement of a neuroendocrine tumour multidisciplinary team. Eligibility, dosing, holds and monitoring for any individual patient are decided by that team against local protocol."
+  }
+ ]
+}

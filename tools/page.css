@@ -1,0 +1,101 @@
+/* A risograph print is a committed visual world -- one paper, one ink set.
+   Every colour is painted explicitly so the page holds on any host ground. */
+:root{
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --paper:#FAF5E9; --cream:#F5EEDC; --creamD:#E3D8BE; --creamL:#FDFAF2;
+  --ink:#1E2647; --navy:#2B3A67; --navyL:#3D5083; --navyXL:#6377A8;
+  --gold:#EFBF49; --goldD:#D69F26; --teal:#3E9E8F; --plum:#9A5E7E; --rust:#C4664D;
+  --rule:#C9BFA3;
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;background-image:var(--grain);opacity:.30;mix-blend-mode:multiply;pointer-events:none;z-index:99}
+.wrap{max-width:880px;margin:0 auto;padding-inline:18px;padding-block:34px 60px}
+
+.masthead{display:flex;flex-direction:column;gap:12px;margin-bottom:26px}
+.kicker{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--navyL)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(30px,6.4vw,50px);line-height:1.02;letter-spacing:-.022em;margin:0;text-wrap:balance;color:var(--ink)}
+h1 em{font-style:normal;color:var(--rust)}
+.standfirst{margin:0;max-width:60ch;font-size:17px;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:2px}
+.chip{font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.05em;padding:4px 9px;background:var(--cream);color:var(--ink);border:1.5px solid var(--ink);box-shadow:3px 3px 0 rgba(30,38,71,.17)}
+.chip.warn{background:transparent;border-style:dashed;color:var(--navyL);box-shadow:none}
+
+.player{background:var(--cream);border:1.6px solid var(--ink);box-shadow:6px 6px 0 rgba(30,38,71,.17)}
+.stage{position:relative}
+.sc{display:none;margin:0}
+.sc.is-active{display:block}
+.svg-hold{overflow-x:auto;border-bottom:1.6px solid var(--ink)}
+.svg-hold svg{display:block;width:100%;min-width:500px;height:auto}
+.stage-tag{position:absolute;top:12px;right:14px;font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.1em;color:var(--navyL);background:var(--creamL);border:1.4px solid var(--ink);padding:2px 7px}
+.narration{padding:18px 20px 17px;min-height:150px;border-bottom:1.6px solid var(--ink);background:var(--creamL)}
+.narration h2{font-family:var(--display);font-weight:700;font-size:19px;letter-spacing:-.01em;margin:0 0 6px;text-wrap:balance;color:var(--ink)}
+.narration p{margin:0;font-size:15.5px;line-height:1.66;max-width:64ch}
+
+.transport{display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--cream);flex-wrap:wrap}
+.btn{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.04em;background:var(--creamL);color:var(--ink);border:1.5px solid var(--ink);padding:7px 11px;cursor:pointer;box-shadow:3px 3px 0 rgba(30,38,71,.2);display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:var(--creamD)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 rgba(30,38,71,.2)}
+.btn:focus-visible{outline:2.5px solid var(--rust);outline-offset:2px}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.primary:hover{background:var(--navy)}
+.btn svg{display:block}
+.rail{flex:1 1 180px;min-width:140px;height:9px;background:var(--creamD);border:1.5px solid var(--ink);position:relative;overflow:hidden}
+.rail-fill{position:absolute;inset:0 auto 0 0;width:0%;background:var(--gold)}
+.clock{font-family:var(--mono);font-size:11.5px;color:var(--navyL);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pan-hint{display:none;font-family:var(--mono);font-size:10.5px;color:var(--navyL);letter-spacing:.04em}
+@media (max-width:560px){.pan-hint{display:inline}}
+
+.chapters{display:flex;flex-wrap:wrap;gap:6px;padding:12px 14px 14px;background:var(--creamD);border-top:1.6px solid var(--ink)}
+.tab{font-family:var(--mono);font-size:11px;font-weight:500;background:var(--creamL);color:var(--navyL);border:1.4px solid var(--ink);padding:5px 9px;cursor:pointer;text-align:left}
+.tab b{font-weight:600;color:var(--ink);margin-right:5px;font-variant-numeric:tabular-nums}
+.tab:hover{background:var(--cream)}
+.tab[aria-current="true"]{background:var(--ink);color:var(--paper)}
+.tab[aria-current="true"] b{color:var(--gold)}
+.tab:focus-visible{outline:2.5px solid var(--rust);outline-offset:2px}
+
+.notes{margin-top:46px;display:flex;flex-direction:column;gap:34px}
+.note h3{font-family:var(--mono);font-weight:600;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--navyL);margin:0 0 14px;padding-bottom:7px;border-bottom:1.6px solid var(--ink)}
+.note p{margin:0 0 12px;max-width:66ch}
+.tbl{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12.5px}
+.tbl-scroll{overflow-x:auto}
+.tbl th{text-align:left;font-weight:600;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--navyL);padding:0 12px 7px 0;border-bottom:1.6px solid var(--ink);white-space:nowrap}
+.tbl td{padding:8px 12px 8px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+.tbl td:first-child{color:var(--ink);font-weight:500}
+.tbl td:last-child{padding-right:0}
+.tbl .num{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--rust)}
+.tbl tr:last-child td{border-bottom:none}
+.deck{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px}
+.card{background:var(--cream);border:1.5px solid var(--ink);padding:14px 15px;box-shadow:4px 4px 0 rgba(30,38,71,.16)}
+.card h4{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--navyL);margin:0 0 8px}
+.card p{font-size:14.5px;margin:0;line-height:1.55}
+.card .big{font-family:var(--mono);font-weight:600;font-size:25px;color:var(--ink);display:block;line-height:1.1;margin-bottom:5px;font-variant-numeric:tabular-nums}
+.gloss{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:14.5px}
+.gloss dt{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--rust);padding-top:3px}
+.gloss dd{margin:0}
+@media (max-width:520px){.gloss{grid-template-columns:1fr;gap:1px 0}.gloss dd{margin-bottom:11px}}
+.src{font-size:13.5px;color:var(--navyL);margin:0}
+.src a{color:var(--ink);text-decoration-thickness:1px;text-underline-offset:2px}
+.disclaimer{margin-top:40px;padding:15px 17px;background:var(--cream);border:1.5px dashed var(--ink);font-size:14px;color:var(--navyL)}
+.disclaimer strong{color:var(--ink);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:5px}
+
+/* ---------- scene animation ---------- */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}}
+@keyframes fadeIn{from{opacity:0}}
+@keyframes popIn{from{opacity:0;transform:scale(.8)}}
+@keyframes slideL{from{opacity:0;transform:translateX(-30px)}}
+@keyframes slideR{from{opacity:0;transform:translateX(30px)}}
+.a{animation-duration:.78s;animation-fill-mode:backwards;animation-timing-function:cubic-bezier(.2,.82,.25,1)}
+.a-up{animation-name:fadeUp}.a-dn{animation-name:fadeDown}.a-in{animation-name:fadeIn}
+.a-pop{animation-name:popIn}.a-l{animation-name:slideL}.a-r{animation-name:slideR}
+.a-pop,.a-up,.a-dn,.a-l,.a-r{transform-box:fill-box;transform-origin:center}
+.d1{animation-delay:.3s}.d2{animation-delay:.6s}.d3{animation-delay:.9s}
+.d4{animation-delay:1.2s}.d5{animation-delay:1.55s}.d6{animation-delay:1.9s}
+.d7{animation-delay:2.25s}.d8{animation-delay:2.6s}.d9{animation-delay:2.95s}
+.d10{animation-delay:3.3s}.d11{animation-delay:3.7s}.d12{animation-delay:4.1s}
+.stage.paused .sc.is-active *{animation-play-state:paused}
+@media (prefers-reduced-motion: reduce){.sc *{animation:none!important}}
