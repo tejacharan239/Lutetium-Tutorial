@@ -124,7 +124,7 @@ def defs(uid='r'):
   </pattern>
   <filter id="grain{uid}" x="0" y="0" width="100%" height="100%">
     <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch" result="n"/>
-    <feColorMatrix in="n" type="saturate" values="0"/>
+    <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.118  0 0 0 0 0.149  0 0 0 0 0.278  -1.6 0 0 0 1.05"/>
   </filter>
 </defs>'''
 
@@ -138,10 +138,10 @@ def screen(w, h, uid='r', light=0.30, dark=0.10, grain=0.22, x=0, y=0):
     at = 'x="%d" y="%d" ' % (x, y)
     return (
         '<rect %swidth="%d" height="%d" fill="url(#htl%s)" opacity="%.3f"/>' % (at, w, h, uid, light) +
-        '<rect %swidth="%d" height="%d" fill="url(#htd%s)" opacity="%.3f" '
-        'style="mix-blend-mode:multiply"/>' % (at, w, h, uid, dark) +
-        '<rect %swidth="%d" height="%d" filter="url(#grain%s)" opacity="%.3f" '
-        'style="mix-blend-mode:multiply"/>' % (at, w, h, uid, grain)
+        # plain alpha, not multiply: dark-on-light at this opacity is visually the same,
+        # and blend modes force the renderer to composite everything beneath offscreen
+        '<rect %swidth="%d" height="%d" fill="url(#htd%s)" opacity="%.3f"/>' % (at, w, h, uid, dark) +
+        '<rect %swidth="%d" height="%d" filter="url(#grain%s)" opacity="%.3f"/>' % (at, w, h, uid, grain * 1.8)
     )
 
 def plate(x, y, w, h, title, lines, accent=None, uid='r', fs=11.5):

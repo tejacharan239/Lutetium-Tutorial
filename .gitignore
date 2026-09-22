@@ -1,2 +1,4 @@
 # build output: regenerate with tools/render-video.mjs
 *.mp4
+__pycache__/
+*.pyc

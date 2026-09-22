@@ -65,9 +65,9 @@ body::before{{display:none}}
 #scenes svg{{display:block;width:1660px;height:968px;overflow:visible}}
 #trans{{position:absolute;left:0;top:0;width:1920px;height:984px;z-index:4;display:none}}
 #mottle,#vignette,#flick{{position:absolute;inset:0;pointer-events:none}}
-#mottle{{z-index:7;mix-blend-mode:multiply;opacity:.55;will-change:transform}}
+#mottle{{z-index:7;opacity:.42;will-change:transform}}
 #vignette{{z-index:8;background:radial-gradient(ellipse 78% 72% at 50% 47%,rgba(0,0,0,0) 58%,rgba(30,38,71,.20) 100%)}}
-#flick{{z-index:9;background:#1E2647;mix-blend-mode:multiply;opacity:0}}
+#flick{{z-index:9;background:#1E2647;opacity:0}}
 #slate{{position:absolute;right:130px;top:26px;font-family:var(--mono);font-weight:600;font-size:19px;letter-spacing:.14em;color:var(--navyL);z-index:6}}
 #cap{{position:absolute;left:130px;right:130px;top:990px;height:68px;display:flex;align-items:center;gap:20px;z-index:6}}
 #capRule{{width:6px;align-self:stretch;background:var(--rust);flex:none}}
@@ -92,7 +92,7 @@ body::before{{display:none}}
   <svg id="mottle" viewBox="0 0 1920 1080" preserveAspectRatio="none">
     <filter id="mot" x="0" y="0" width="100%" height="100%">
       <feTurbulence type="fractalNoise" baseFrequency="0.011 0.016" numOctaves="3" seed="11"/>
-      <feColorMatrix type="matrix" values="0 0 0 0 .91  0 0 0 0 .87  0 0 0 0 .78  0 0 0 -.9 .62"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 .52  0 0 0 0 .42  0 0 0 0 .27  0 0 0 -1.1 .62"/>
     </filter>
     <rect width="1920" height="1080" filter="url(#mot)"/>
   </svg>
