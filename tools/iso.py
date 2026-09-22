@@ -91,10 +91,11 @@ def figure(x, y, z, o=(0, 0), body=None, head=None, scale=1.0, extra=''):
     head = head or P['cream']
     px, py = pt(x, y, z, o)
     s = scale
-    return ('<g%s><ellipse cx="%.2f" cy="%.2f" rx="%.2f" ry="%.2f" fill="%s" opacity=".25"/>'
+    phase = -((abs(x * 7.31 + y * 3.17 + z * 1.9) % 70) / 100.0)
+    return ('<g class="fig" style="animation-delay:%.2fs"%s><ellipse cx="%.2f" cy="%.2f" rx="%.2f" ry="%.2f" fill="%s" opacity=".25"/>'
             '<rect x="%.2f" y="%.2f" width="%.2f" height="%.2f" rx="%.2f" fill="%s"/>'
             '<circle cx="%.2f" cy="%.2f" r="%.2f" fill="%s"/></g>'
-            % (extra, px, py, 3.0 * s, 1.7 * s, P['ink'],
+            % (phase, extra, px, py, 3.0 * s, 1.7 * s, P['ink'],
                px - 2.1 * s, py - 9.5 * s, 4.2 * s, 9.5 * s, 1.6 * s, body,
                px, py - 12.2 * s, 2.7 * s, head))
 
@@ -127,29 +128,33 @@ def defs(uid='r'):
   </filter>
 </defs>'''
 
-def screen(w, h, uid='r', light=0.30, dark=0.10, grain=0.22):
+def screen(w, h, uid='r', light=0.30, dark=0.10, grain=0.22, x=0, y=0):
     """Overlay layers that turn flat vector fills into a printed image.
 
     `light` punches paper-coloured dots out of the ink, which is what actually
     reads as risograph; `dark` adds a finer opposing screen so pale areas are
     not left perfectly smooth.
     """
+    at = 'x="%d" y="%d" ' % (x, y)
     return (
-        '<rect width="%d" height="%d" fill="url(#htl%s)" opacity="%.3f"/>' % (w, h, uid, light) +
-        '<rect width="%d" height="%d" fill="url(#htd%s)" opacity="%.3f" '
-        'style="mix-blend-mode:multiply"/>' % (w, h, uid, dark) +
-        '<rect width="%d" height="%d" filter="url(#grain%s)" opacity="%.3f" '
-        'style="mix-blend-mode:multiply"/>' % (w, h, uid, grain)
+        '<rect %swidth="%d" height="%d" fill="url(#htl%s)" opacity="%.3f"/>' % (at, w, h, uid, light) +
+        '<rect %swidth="%d" height="%d" fill="url(#htd%s)" opacity="%.3f" '
+        'style="mix-blend-mode:multiply"/>' % (at, w, h, uid, dark) +
+        '<rect %swidth="%d" height="%d" filter="url(#grain%s)" opacity="%.3f" '
+        'style="mix-blend-mode:multiply"/>' % (at, w, h, uid, grain)
     )
 
 def plate(x, y, w, h, title, lines, accent=None, uid='r', fs=11.5):
     """A cream annotation card, keylined so it sits on the paper rather than in it."""
     accent = accent or P['gold']
     s = '<g>'
-    s += '<rect x="%.1f" y="%.1f" width="%d" height="%d" fill="%s" opacity=".18"/>' % (x + 4, y + 4, w, h, P['ink'])
-    s += '<rect x="%d" y="%d" width="%d" height="%d" fill="%s" stroke="%s" stroke-width="1.6"/>' % (
+    s += '<rect class="rough" x="%.1f" y="%.1f" width="%d" height="%d" fill="%s" opacity=".18"/>' % (x + 4, y + 4, w, h, P['ink'])
+    s += '<rect class="rough" x="%d" y="%d" width="%d" height="%d" fill="%s" stroke="%s" stroke-width="1.6"/>' % (
         x, y, w, h, P['cream'], P['ink'])
-    s += '<rect x="%d" y="%d" width="5" height="%d" fill="%s"/>' % (x, y, h, accent)
+    # riso misregistration: the second ink drum never lands exactly on the first
+    s += ('<rect x="%.1f" y="%.1f" width="%d" height="%d" fill="none" stroke="%s" stroke-width="1.3" '
+          'opacity=".38"/>' % (x + 1.6, y + 1.1, w, h, P['rust']))
+    s += '<rect class="rough" x="%d" y="%d" width="5" height="%d" fill="%s"/>' % (x, y, h, accent)
     s += ('<text x="%d" y="%d" font-family="IBM Plex Mono, monospace" font-size="9.5" font-weight="600" '
           'letter-spacing="1.5" fill="%s">%s</text>' % (x + 17, y + 21, P['navyL'], title))
     for i, ln in enumerate(lines):

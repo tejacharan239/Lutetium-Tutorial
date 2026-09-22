@@ -82,20 +82,79 @@ h1 em{font-style:normal;color:var(--rust)}
 .disclaimer{margin-top:40px;padding:15px 17px;background:var(--cream);border:1.5px dashed var(--ink);font-size:14px;color:var(--navyL)}
 .disclaimer strong{color:var(--ink);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:5px}
 
-/* ---------- scene animation ---------- */
+/* ---------- scene animation ----------
+   Written as a stop-motion vocabulary: pieces are placed (drop, stamp),
+   lines are drawn, bars grow, and something is always moving on a loop.
+   The video quantises all of this to twelve poses a second; the web page
+   plays it smoothly. */
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}}
 @keyframes fadeIn{from{opacity:0}}
 @keyframes popIn{from{opacity:0;transform:scale(.8)}}
 @keyframes slideL{from{opacity:0;transform:translateX(-30px)}}
 @keyframes slideR{from{opacity:0;transform:translateX(30px)}}
+@keyframes dropIn{
+  0%{opacity:0;transform:translateY(-84px)}
+  12%{opacity:1}
+  46%{transform:translateY(0) scale(1.07,.88)}
+  64%{transform:translateY(-11px) scale(.96,1.05)}
+  82%{transform:translateY(0) scale(1.02,.97)}
+  100%{transform:none}}
+@keyframes stamp{
+  0%{opacity:0;transform:scale(1.28) rotate(-4.5deg)}
+  48%{opacity:1;transform:scale(.95) rotate(.9deg)}
+  70%{transform:scale(1.025) rotate(-.4deg)}
+  100%{transform:none}}
+@keyframes drawOn{from{stroke-dashoffset:1}}
+@keyframes growUp{0%{transform:scaleY(0)}68%{transform:scaleY(1.06)}84%{transform:scaleY(.98)}100%{transform:none}}
+@keyframes rideUp{0%{transform:translateY(var(--gh))}68%{transform:translateY(calc(var(--gh) * -.06))}84%{transform:translateY(calc(var(--gh) * .02))}100%{transform:none}}
+@keyframes hop{0%,100%{transform:translateY(0)}45%{transform:translateY(-4px)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3.2px)}}
+@keyframes pulse{0%,100%{opacity:.82;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+@keyframes ripple{0%{opacity:.95;transform:scale(.55)}100%{opacity:0;transform:scale(1.9)}}
+@keyframes wave{0%{opacity:.95;transform:scale(.28)}80%{opacity:.5}100%{opacity:0;transform:scale(1)}}
+@keyframes drift{from{transform:translate(-6px,-3.5px)}to{transform:translate(6px,3.5px)}}
+@keyframes flicker{0%{opacity:1}18%{opacity:.62}30%{opacity:1}57%{opacity:.8}74%{opacity:1}88%{opacity:.7}}
+@keyframes drip{0%{transform:translate(0,0);opacity:0}12%{opacity:1}86%{opacity:1}100%{transform:translate(var(--dx),var(--dy));opacity:0}}
+@keyframes walkIn{from{transform:translate(var(--sx),var(--sy))}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes jit{0%{transform:translate(0,0)}33%{transform:translate(2px,-1.4px)}66%{transform:translate(-1.5px,1.2px)}}
+@keyframes flowOut{0%{stroke-dashoffset:1;opacity:1}68%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:0;opacity:0}}
+@keyframes headBlink{0%,52%{opacity:0}66%{opacity:1}100%{opacity:0}}
+
 .a{animation-duration:.78s;animation-fill-mode:backwards;animation-timing-function:cubic-bezier(.2,.82,.25,1)}
 .a-up{animation-name:fadeUp}.a-dn{animation-name:fadeDown}.a-in{animation-name:fadeIn}
 .a-pop{animation-name:popIn}.a-l{animation-name:slideL}.a-r{animation-name:slideR}
-.a-pop,.a-up,.a-dn,.a-l,.a-r{transform-box:fill-box;transform-origin:center}
-.d1{animation-delay:.3s}.d2{animation-delay:.6s}.d3{animation-delay:.9s}
-.d4{animation-delay:1.2s}.d5{animation-delay:1.55s}.d6{animation-delay:1.9s}
-.d7{animation-delay:2.25s}.d8{animation-delay:2.6s}.d9{animation-delay:2.95s}
-.d10{animation-delay:3.3s}.d11{animation-delay:3.7s}.d12{animation-delay:4.1s}
+.a.a-drop{animation-name:dropIn;animation-duration:1.05s;animation-timing-function:cubic-bezier(.3,.6,.35,1)}
+.a.a-stamp{animation-name:stamp;animation-duration:.72s;animation-timing-function:cubic-bezier(.3,.7,.3,1)}
+.a-pop,.a-up,.a-dn,.a-l,.a-r,.a-stamp{transform-box:fill-box;transform-origin:center}
+.a-drop,.grow{transform-box:fill-box;transform-origin:50% 100%}
+
+/* delays also publish --dl, so nested pieces (arrows, bars) keep time with their group */
+.d1{animation-delay:.3s;--dl:.3s}.d2{animation-delay:.6s;--dl:.6s}.d3{animation-delay:.9s;--dl:.9s}
+.d4{animation-delay:1.2s;--dl:1.2s}.d5{animation-delay:1.55s;--dl:1.55s}.d6{animation-delay:1.9s;--dl:1.9s}
+.d7{animation-delay:2.25s;--dl:2.25s}.d8{animation-delay:2.6s;--dl:2.6s}.d9{animation-delay:2.95s;--dl:2.95s}
+.d10{animation-delay:3.3s;--dl:3.3s}.d11{animation-delay:3.7s;--dl:3.7s}.d12{animation-delay:4.1s;--dl:4.1s}
+
+.drawline{stroke-dasharray:1;animation:drawOn .72s cubic-bezier(.35,.65,.3,1) var(--dl,0s) backwards}
+.arrowhead{animation:fadeIn .2s calc(var(--dl,0s) + .6s) backwards}
+.flow .drawline{animation:flowOut 1.35s linear var(--fd,0s) infinite}
+.flow .arrowhead{animation:headBlink 1.35s linear var(--fd,0s) infinite}
+.grow{animation:growUp 1.5s cubic-bezier(.22,.8,.25,1) var(--dl,0s) backwards}
+.walk{animation:walkIn 2.7s linear var(--dl,0s) backwards}
+.ride{animation:rideUp 1.5s cubic-bezier(.22,.8,.25,1) var(--dl,0s) backwards}
+
+.fig{animation:hop .68s ease-in-out infinite}
+.bob{animation:bob 1.1s ease-in-out infinite}
+.pulse{transform-box:fill-box;transform-origin:50% 62%;animation:pulse 1.7s ease-in-out infinite}
+.ripple{transform-box:fill-box;transform-origin:center;animation:ripple 2.1s ease-out infinite}
+.wave{transform-box:fill-box;transform-origin:center;animation:wave 2.4s ease-out infinite}
+.drift{animation:drift 3.4s ease-in-out infinite alternate}
+.flicker{animation:flicker 1.45s linear infinite}
+.drip{animation:drip 1.1s linear infinite}
+.spin{animation:spin 2.2s linear infinite}
+.jit{animation:jit .5s steps(1) infinite}
+.rough{filter:url(#roughEdge)}
+
 .stage.paused .sc.is-active *{animation-play-state:paused}
 @media (prefers-reduced-motion: reduce){.sc *{animation:none!important}}

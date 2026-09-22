@@ -36,6 +36,8 @@ HTML = f'''<title>The Lutetium-177 Reel</title>
 {CSS}
 </style>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><filter id="roughEdge" x="-4%" y="-8%" width="108%" height="116%"><feTurbulence id="roughTurb" type="fractalNoise" baseFrequency="0.038" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="3.2" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg>
+
 <div class="wrap">
 <header class="masthead">
   <p class="kicker">Peptide receptor radionuclide therapy &middot; an isometric explainer</p>
