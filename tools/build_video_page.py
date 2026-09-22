@@ -163,12 +163,16 @@ window.seek = function(t){{
     for (var k=0;k<bl.length;k++){{
       bl[k].setAttribute('transform','translate('+((hash(sf,k)-.5)*1.25).toFixed(2)+' '+((hash(sf,k+71)-.5)*1.25).toFixed(2)+')');
     }}
-    // texture crawl: grain, card edges and the halftone screen are re-laid every pose
-    var tb = S.querySelectorAll('feTurbulence');
-    for (var k=0;k<tb.length;k++) tb[k].setAttribute('seed', (sf%89)+1);
+    // the torn card edges boil every pose, as re-cut paper would. The paper grain and the
+    // print screen stay put: physical paper does not change between frames, and full-frame
+    // noise that changes every frame is close to incompressible (set CRAWL to re-lay it).
     document.getElementById('roughTurb').setAttribute('seed', (sf%53)+1);
-    var pats = S.querySelectorAll('pattern');
-    for (var k=0;k<pats.length;k++){{ pats[k].setAttribute('x', ((sf+k)%3)*0.9); pats[k].setAttribute('y', ((sf*2+k)%3)*0.9); }}
+    if (window.CRAWL){{
+      var tb = S.querySelectorAll('feTurbulence');
+      for (var k=0;k<tb.length;k++) tb[k].setAttribute('seed', (sf%89)+1);
+      var pats = S.querySelectorAll('pattern');
+      for (var k=0;k<pats.length;k++){{ pats[k].setAttribute('x', ((sf+k)%3)*0.9); pats[k].setAttribute('y', ((sf*2+k)%3)*0.9); }}
+    }}
     // exposure flicker, as from a lamp that is never quite constant between frames
     document.getElementById('flick').style.opacity = (0.010 + hash(sf,999)*0.034).toFixed(3);
     // counters
