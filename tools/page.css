@@ -93,16 +93,19 @@ h1 em{font-style:normal;color:var(--rust)}
 @keyframes popIn{from{opacity:0;transform:scale(.8)}}
 @keyframes slideL{from{opacity:0;transform:translateX(-30px)}}
 @keyframes slideR{from{opacity:0;transform:translateX(30px)}}
+/* falls accelerate into the board (gravity), so contact is abrupt and lands on the
+   same pose as its sound; the squash and rebound then ease out */
 @keyframes dropIn{
-  0%{opacity:0;transform:translateY(-84px)}
+  0%{opacity:0;transform:translateY(-84px);animation-timing-function:cubic-bezier(.55,0,.95,.45)}
   12%{opacity:1}
-  46%{transform:translateY(0) scale(1.07,.88)}
-  64%{transform:translateY(-11px) scale(.96,1.05)}
+  46%{transform:translateY(0) scale(1.07,.88);animation-timing-function:cubic-bezier(.2,.7,.35,1)}
+  64%{transform:translateY(-11px) scale(.96,1.05);animation-timing-function:cubic-bezier(.55,0,.8,.5)}
   82%{transform:translateY(0) scale(1.02,.97)}
   100%{transform:none}}
 @keyframes stamp{
-  0%{opacity:0;transform:scale(1.28) rotate(-4.5deg)}
-  48%{opacity:1;transform:scale(.95) rotate(.9deg)}
+  0%{opacity:0;transform:scale(1.28) rotate(-4.5deg);animation-timing-function:cubic-bezier(.6,0,.95,.5)}
+  18%{opacity:1}
+  48%{transform:scale(.95) rotate(.9deg);animation-timing-function:cubic-bezier(.2,.7,.3,1)}
   70%{transform:scale(1.025) rotate(-.4deg)}
   100%{transform:none}}
 @keyframes drawOn{from{stroke-dashoffset:1}}
