@@ -5,7 +5,26 @@ A circle lying in the xy-plane projects to an axis-aligned ellipse whose radii
 are in a fixed sqrt(3) ratio, which is what makes the domes and cylinders sit
 on the grid instead of merely looking tilted.
 """
-import math
+import math, json, html, re
+
+# Second backend. In '3d' mode every primitive emits a <m3> node carrying its world-space
+# parameters instead of projected SVG, so the same scene code builds a real 3D diorama.
+MODE = '2d'
+
+LAST_O = (360.0, 210.0)
+
+def m3(kind, **kw):
+    """Emit a 3D node. `o` (the scene's projected origin) is recorded, not emitted, so the
+    3D camera can put the world origin where the isometric drawing put it."""
+    global LAST_O
+    o = kw.pop('o', None)
+    if o and tuple(o) != (0, 0): LAST_O = (float(o[0]), float(o[1]))
+    kw['t'] = kind
+    return '<m3 j="%s"/>' % html.escape(json.dumps(kw, separators=(',', ':')), quote=True)
+
+def _op(extra):
+    m = re.search(r'opacity="([0-9.]+)"', extra or '')
+    return float(m.group(1)) if m else 1.0
 
 K = math.cos(math.radians(30))     # 0.8660254
 EX = K * math.sqrt(2)              # circle -> ellipse, horizontal radius factor
@@ -38,6 +57,7 @@ def _poly(points, fill, extra=''):
 # ---------------------------------------------------------------- solids
 def box(x, y, z, w, d, h, top, left, right, o=(0, 0), extra=''):
     """Axis-aligned cuboid. Returns top, left (y+d) and right (x+w) faces."""
+    if MODE == '3d': return m3('box', o=o, x=x, y=y, z=z, w=w, d=d, h=h, c=right, top=top, op=_op(extra))
     T = [pt(x, y, z + h, o), pt(x + w, y, z + h, o), pt(x + w, y + d, z + h, o), pt(x, y + d, z + h, o)]
     L = [pt(x, y + d, z, o), pt(x + w, y + d, z, o), pt(x + w, y + d, z + h, o), pt(x, y + d, z + h, o)]
     R = [pt(x + w, y, z, o), pt(x + w, y + d, z, o), pt(x + w, y + d, z + h, o), pt(x + w, y, z + h, o)]
@@ -45,14 +65,17 @@ def box(x, y, z, w, d, h, top, left, right, o=(0, 0), extra=''):
 
 def plane(x, y, w, d, fill, z=0.0, o=(0, 0), extra=''):
     """Flat tile lying on the ground (or at height z)."""
+    if MODE == '3d': return '' if fill == 'none' else m3('plane', o=o, x=x, y=y, w=w, d=d, c=fill, z=z, op=_op(extra))
     return _poly([pt(x, y, z, o), pt(x + w, y, z, o), pt(x + w, y + d, z, o), pt(x, y + d, z, o)], fill, extra)
 
 def disc(cx, cy, r, fill, z=0.0, o=(0, 0), extra=''):
+    if MODE == '3d': return m3('disc', o=o, x=cx, y=cy, r=r, c=fill, z=z, op=_op(extra))
     px, py = pt(cx, cy, z, o)
     return '<ellipse cx="%.2f" cy="%.2f" rx="%.2f" ry="%.2f" fill="%s"%s/>' % (
         px, py, r * EX, r * EY, fill, extra)
 
 def cylinder(cx, cy, r, z, h, top, side, o=(0, 0), extra=''):
+    if MODE == '3d': return m3('cyl', o=o, x=cx, y=cy, r=r, z=z, h=h, top=top, c=side, op=_op(extra))
     rx, ry = r * EX, r * EY
     tx, ty = pt(cx, cy, z + h, o)
     bx, by = pt(cx, cy, z, o)
@@ -61,8 +84,9 @@ def cylinder(cx, cy, r, z, h, top, side, o=(0, 0), extra=''):
     return ('<path d="%s" fill="%s"%s/>' % (body, side, extra)) + \
            disc(cx, cy, r, top, z + h, o, extra)
 
-def dome(cx, cy, r, z, h, fill, o=(0, 0), extra="", rim=None):
+def dome(cx, cy, r, z, h, fill, o=(0, 0), extra="", rim=None, cut=False):
     """Half-ellipsoid cap of height h sitting at height z."""
+    if MODE == '3d': return m3('dome', o=o, x=cx, y=cy, r=r, z=z, h=h, c=fill, op=_op(extra), cut=cut)
     rx, ry = r * EX, r * EY
     cxp, cyp = pt(cx, cy, z, o)
     d = ('M %.2f,%.2f A %.2f,%.2f 0 0 1 %.2f,%.2f A %.2f,%.2f 0 0 1 %.2f,%.2f Z'
@@ -76,11 +100,13 @@ def dome(cx, cy, r, z, h, fill, o=(0, 0), extra="", rim=None):
     return out
 
 def ring(cx, cy, r, z, fill, w=1.6, o=(0, 0), extra=''):
+    if MODE == '3d': return m3('ring', o=o, x=cx, y=cy, r=r, z=z, c=fill, w=w, op=_op(extra), dash='dasharray' in (extra or ''))
     px, py = pt(cx, cy, z, o)
     return ('<ellipse cx="%.2f" cy="%.2f" rx="%.2f" ry="%.2f" fill="none" stroke="%s" '
             'stroke-width="%.2f"%s/>' % (px, py, r * EX, r * EY, fill, w, extra))
 
 def line(a, b, stroke, w=1.4, o=(0, 0), extra=''):
+    if MODE == '3d': return m3('line', o=o, a=list(a), b=list(b), c=stroke, w=w, op=_op(extra))
     p, q = pt(*a, o=o), pt(*b, o=o)
     return ('<line x1="%.2f" y1="%.2f" x2="%.2f" y2="%.2f" stroke="%s" stroke-width="%.2f" '
             'stroke-linecap="round"%s/>' % (p[0], p[1], q[0], q[1], stroke, w, extra))
@@ -89,6 +115,9 @@ def figure(x, y, z, o=(0, 0), body=None, head=None, scale=1.0, extra=''):
     """A tiny person, for scale. Drawn in screen space at an isometric anchor."""
     body = body or P['gold']
     head = head or P['cream']
+    if MODE == '3d':
+        return m3('fig', o=o, x=x, y=y, z=z, c=body, head=head, s=scale,
+                  ph=-((abs(x * 7.31 + y * 3.17 + z * 1.9) % 70) / 100.0))
     px, py = pt(x, y, z, o)
     s = scale
     phase = -((abs(x * 7.31 + y * 3.17 + z * 1.9) % 70) / 100.0)
@@ -105,15 +134,18 @@ def tile(x, y, w, d, fill, o=(0, 0), extra=''):
 
 def wall_x(x, y, z, d, h, fill, o=(0, 0), extra=''):
     """Thin wall running along +y at a fixed x (the left-facing plane)."""
+    if MODE == '3d': return m3('box', o=o, x=x - 1.2, y=y, z=z, w=2.4, d=d, h=h, c=fill, top=fill, op=1)
     return _poly([pt(x, y, z, o), pt(x, y + d, z, o), pt(x, y + d, z + h, o), pt(x, y, z + h, o)], fill, extra)
 
 def wall_y(x, y, z, w, h, fill, o=(0, 0), extra=''):
     """Thin wall running along +x at a fixed y (the right-facing plane)."""
+    if MODE == '3d': return m3('box', o=o, x=x, y=y - 1.2, z=z, w=w, d=2.4, h=h, c=fill, top=fill, op=1)
     return _poly([pt(x, y, z, o), pt(x + w, y, z, o), pt(x + w, y, z + h, o), pt(x, y, z + h, o)], fill, extra)
 
 # ---------------------------------------------------------------- print process
 def defs(uid='r'):
     """Risograph screen: ink is laid down as dots, so the paper shows through."""
+    if MODE == '3d': return ''
     return f'''<defs>
   <pattern id="htl{uid}" width="3.6" height="3.6" patternUnits="userSpaceOnUse" patternTransform="rotate(15)">
     <rect width="3.6" height="3.6" fill="none"/>
@@ -135,6 +167,7 @@ def screen(w, h, uid='r', light=0.30, dark=0.10, grain=0.22, x=0, y=0):
     reads as risograph; `dark` adds a finer opposing screen so pale areas are
     not left perfectly smooth.
     """
+    if MODE == '3d': return ''   # the 3D renderer prints its own screen in a shader pass
     at = 'x="%d" y="%d" ' % (x, y)
     return (
         '<rect %swidth="%d" height="%d" fill="url(#htl%s)" opacity="%.3f"/>' % (at, w, h, uid, light) +
@@ -147,6 +180,8 @@ def screen(w, h, uid='r', light=0.30, dark=0.10, grain=0.22, x=0, y=0):
 def plate(x, y, w, h, title, lines, accent=None, uid='r', fs=11.5):
     """A cream annotation card, keylined so it sits on the paper rather than in it."""
     accent = accent or P['gold']
+    if MODE == '3d':
+        return m3('plate', x=x, y=y, w=w, h=h, title=title, lines=lines, accent=accent, fs=fs)
     s = '<g>'
     s += '<rect class="rough" x="%.1f" y="%.1f" width="%d" height="%d" fill="%s" opacity=".18"/>' % (x + 4, y + 4, w, h, P['ink'])
     s += '<rect class="rough" x="%d" y="%d" width="%d" height="%d" fill="%s" stroke="%s" stroke-width="1.6"/>' % (
@@ -163,6 +198,7 @@ def plate(x, y, w, h, title, lines, accent=None, uid='r', fs=11.5):
     return s + '</g>'
 
 def heading(x, y, text, size=13, fill=None, weight=600, ls=2.2):
+    if MODE == '3d': return m3('heading', x=x, y=y, text=text, size=size, fill=fill or P['navyL'])
     return ('<text x="%d" y="%d" font-family="IBM Plex Mono, monospace" font-size="%d" '
             'font-weight="%d" letter-spacing="%.1f" fill="%s">%s</text>'
             % (x, y, size, weight, ls, fill or P['navyL'], text))

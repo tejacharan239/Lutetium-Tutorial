@@ -1,10 +1,12 @@
 """Recurring objects in the diorama. Each returns an SVG fragment."""
 import math
 from iso import *
+import iso as ISO
 
 def glass_drum(cx, cy, r, z, h, o, tint=None):
     """A pale glass cylinder you can see into -- the reference's centrepiece."""
     tint = tint or P['creamL']
+    if ISO.MODE == '3d': return m3('glass', o=o, x=cx, y=cy, r=r, z=z, h=h, c=tint)
     s = cylinder(cx, cy, r, z, h, tint, tint, o, ' opacity=".42"')
     s += ring(cx, cy, r, z + h, P['paper'], 1.5, o, ' opacity=".85"')
     s += ring(cx, cy, r, z, P['paper'], 1.2, o, ' opacity=".45"')
@@ -22,7 +24,7 @@ def cell(cx, cy, r, o, cap, capD, n_rec=0, rec_c=None, h=17, drum=None, core=Non
         s += '<g class="pulse">%s</g>' % cylinder(cx, cy, r * 0.34, 0, h * 0.62, core, core, o, ' opacity=".95"')
     if glow:
         s += '<g class="ripple">%s</g>' % ring(cx, cy, r * 0.62, h * 0.5, P['goldL'], 2.2, o, ' opacity=".8"')
-    s += dome(cx, cy, r, h, r * 0.92, cap, o, rim=capD)
+    s += dome(cx, cy, r, h, r * 0.92, cap, o, rim=capD, cut=True)
     s += ring(cx, cy, r, h, P['paper'], 1.4, o, ' opacity=".7"')
     for i in range(n_rec):
         a = 2 * math.pi * i / n_rec + 0.25
@@ -86,6 +88,7 @@ def stack(x, y, o, levels, col, step=9, s=22):
 def arrow(a, b, o, c=None, w=2.2):
     """A ground-level direction marker between two world points."""
     c = c or P['paper']
+    if ISO.MODE == '3d': return m3('arrow', o=o, a=list(a), b=list(b), c=c, w=w)
     (ax, ay), (bx, by) = pt(*a, o=o), pt(*b, o=o)
     ang = math.atan2(by - ay, bx - ax)
     h = 7.0

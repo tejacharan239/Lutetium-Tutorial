@@ -12,7 +12,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const FPS = 24, W = 1920, H = 1080;
+const FPS = 24, W = +(process.env.RW || 1920), H = +(process.env.RH || 1080);
 const FF = process.env.FFMPEG || '/usr/local/lib/python3.11/dist-packages/imageio_ffmpeg/binaries/ffmpeg-linux-x86_64-v7.0.2';
 const ENC = ['-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-pix_fmt', 'yuv420p', '-r', String(FPS)];
 const args = process.argv.slice(2);
@@ -25,10 +25,12 @@ function run(cmd, a, opts = {}) {
 }
 
 async function openPage(page) {
-  const b = await chromium.launch({ args: ['--hide-scrollbars', '--force-device-scale-factor=1', '--disable-lcd-text'] });
+  const b = await chromium.launch({ args: ['--hide-scrollbars', '--force-device-scale-factor=1', '--disable-lcd-text',
+                                            '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
   const p = await (await b.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 1 })).newPage();
   p.on('pageerror', e => console.error('PAGEERR', String(e)));
-  await p.goto('file://' + path.resolve(page));
+  await p.goto(/^https?:/.test(page) ? page : 'file://' + path.resolve(page));
+  await p.waitForFunction(() => window.seek && window.READY !== false, { timeout: 120000 });
   await p.evaluate(() => document.fonts.ready);
   await p.waitForTimeout(600);
   return { b, p };
@@ -70,7 +72,7 @@ if (args[0] === '--worker') {
   const self = fileURLToPath(import.meta.url);
   await Promise.all(Array.from({ length: N }, (_, i) => {
     const from = i * per, to = Math.min(frames, from + per);
-    const seg = path.join(dir, `.seg${i}.mp4`); segs.push(seg);
+    const seg = path.join(dir, `.seg${i}.mp4`); segs.push(seg);   // segments land beside the output
     return run(process.execPath, [self, '--worker', page, seg, String(from), String(to), 'w' + i]);
   }));
   const list = path.join(dir, '.segs.txt');

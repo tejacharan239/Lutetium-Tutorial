@@ -4,6 +4,7 @@ import sys, math, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from iso import *
 from actors import *
+import iso as ISO
 
 W, H = 720, 420
 
@@ -14,14 +15,20 @@ def L(content, cls, style=''):
     """A looping layer nested inside a placed group, so the two motions compose."""
     return '<g class="%s"%s>%s</g>' % (cls, (' style="%s"' % style) if style else '', content)
 
-def count(x, y, to, dec, suf, t0, t1, size=13, fill=None, frm=0.0, weight=600):
+def count(x, y, to, dec, suf, t0, t1, size=13, fill=None, frm=0.0, weight=600, w=None):
     """A figure that counts up in the video; the page shows the final value."""
+    if ISO.MODE == '3d':
+        return m3('count', w=list(w) if w else None, sx=x, sy=y, to=to, dec=dec, suf=suf,
+                  t0=t0, t1=t1, size=size, fill=fill or P['ink'], frm=frm)
     return ('<text x="%.0f" y="%.0f" text-anchor="middle" font-family="IBM Plex Mono, monospace" '
             'font-size="%d" font-weight="%d" fill="%s" data-from="%s" data-to="%s" data-dec="%d" '
             'data-suf="%s" data-t0="%.2f" data-t1="%.2f">%s%s</text>'
             % (x, y, size, weight, fill or P['ink'], frm, to, dec, suf, t0, t1, ('%.' + str(dec) + 'f') % to, suf))
 
 def frame(uid, body, title):
+    if ISO.MODE == '3d':
+        return ('<g class="scene3d" data-ox="%.1f" data-oy="%.1f">%s%s</g>'
+                % (ISO.LAST_O[0], ISO.LAST_O[1], body, heading(26, 34, title)))
     # paper and print screen bleed well past the viewBox: the web page clips them,
     # the video lets them run to the frame edge so camera moves never expose bare margin
     BX, BY = 200, 90
@@ -33,6 +40,8 @@ def frame(uid, body, title):
 def lightcone(x, y, z, o, dx, dy, spread=34, colour=None):
     """A shaft of light falling from a lantern onto the ground."""
     colour = colour or P['goldL']
+    if ISO.MODE == '3d':
+        return ''
     ax, ay = pt(x, y, z, o)
     g1 = pt(x + dx - spread, y + dy, 0, o)
     g2 = pt(x + dx, y + dy - spread, 0, o)
@@ -55,7 +64,7 @@ def s01():
     hero += L(cylinder(0, 0, 14, 24, 26, P['gold'], P['goldD'], O), 'pulse')
     hero += disc(0, 0, 26, P['goldL'], 25, O, ' opacity=".38"')
     hero += figure(-20, 20, 24, O, P['rust'], P['cream'], .85)
-    hero += dome(0, 0, 47, 62, 44, P['teal'], O, rim=P['tealD'])
+    hero += dome(0, 0, 47, 62, 44, P['teal'], O, rim=P['tealD'], cut=True)
     hero += ring(0, 0, 47, 62, P['paper'], 1.8, O, ' opacity=".8"')
     s += A(hero, 'a a-drop d1')
     s += A(crate(-96, 92, O, 16, col=P['goldL']) + crate(-74, 106, O, 13, col=P['cream'])
@@ -143,9 +152,12 @@ def s05():
     gantry += disc(-148, -66, 18, P['navyD'], 44.2, O)
     gantry += ring(-148, -66, 25, 44.4, P['gold'], 2.2, O)
     gx, gy = pt(-148, -66, 44.6, O)
-    gantry += ('<g transform="translate(%.1f %.1f) scale(1 %.4f)"><g class="spin">'
-               '<circle cx="%.1f" cy="0" r="4.2" fill="%s"/><circle cx="-%.1f" cy="0" r="3" fill="%s"/></g></g>'
-               % (gx, gy, EY / EX, 25 * EX, P['goldL'], 25 * EX, P['cream']))
+    if ISO.MODE == '3d':
+        gantry += '<g class="spin">%s</g>' % m3('orbit', x=-148, y=-66, z=44.6, r=25, c=P['goldL'], c2=P['cream'])
+    else:
+        gantry += ('<g transform="translate(%.1f %.1f) scale(1 %.4f)"><g class="spin">'
+                   '<circle cx="%.1f" cy="0" r="4.2" fill="%s"/><circle cx="-%.1f" cy="0" r="3" fill="%s"/></g></g>'
+                   % (gx, gy, EY / EX, 25 * EX, P['goldL'], 25 * EX, P['cream']))
     s += A(gantry, 'a a-drop d2')
     s += A(box(-150, -22, 8, 48, 14, 5, P['creamL'], P['creamD'], P['cream'], O)
            + figure(-120, -16, 13, O, P['navy'], P['cream'], .8), 'a a-in d3')
@@ -174,8 +186,9 @@ def s06():
            + box(-126, -66, 52, 12, 12, 16, P['tealL'], P['tealD'], P['teal'], O)
            + box(-126, -66, 32, 12, 12, 16, P['goldL'], P['goldD'], P['gold'], O)
            + line((-120, -60, 32), (-150, -26, 14), P['paper'], 1.6, O)
-           + ''.join('<circle class="drip" cx="%.1f" cy="%.1f" r="2.3" fill="%s" style="--dx:%.1fpx;--dy:%.1fpx;animation-delay:-%.2fs"/>'
-                     % (pt(-120, -60, 32, O) + (P['tealL'],) + tuple(b - a for a, b in zip(pt(-120, -60, 32, O), pt(-150, -26, 14, O))) + (k * .55,))
+           + ''.join((m3('drip', a=[-120, -60, 32], b=[-150, -26, 14], c=P['tealL'], ph=k * .55) if ISO.MODE == '3d' else
+                      '<circle class="drip" cx="%.1f" cy="%.1f" r="2.3" fill="%s" style="--dx:%.1fpx;--dy:%.1fpx;animation-delay:-%.2fs"/>'
+                      % (pt(-120, -60, 32, O) + (P['tealL'],) + tuple(b - a for a, b in zip(pt(-120, -60, 32, O), pt(-150, -26, 14, O))) + (k * .55,)))
                      for k in range(2)), 'a a-dn d3')
     s += A(figure(-92, -30, 0, O, P['rust'], P['cream'], .9), 'a a-in d4')
     s += A(floor(40, -110, 180, 2, P['navy'], O, 8), 'a a-r d5')
@@ -198,7 +211,7 @@ def s07():
     O = (352, 224); s = ''
     s += floor(-160, -160, 320, 2, P['navy'], O, 9)
     s += contours(-160, -160, 320, O, 8)
-    s += A(glass_drum(10, -20, 76, 0, 46, O) + dome(10, -20, 78, 46, 60, P['plum'], O, rim=P['plumD'])
+    s += A(glass_drum(10, -20, 76, 0, 46, O) + dome(10, -20, 78, 46, 60, P['plum'], O, rim=P['plumD'], cut=True)
            + ring(10, -20, 78, 46, P['paper'], 1.8, O, ' opacity=".8"'), 'a a-drop d1')
     for i in range(10):
         a = 2 * math.pi * i / 10 + .3
@@ -211,7 +224,7 @@ def s07():
     wx1, wy1 = pt(-22, 52, 0, O)
     s += A(L(figure(-22, 52, 0, O, P['gold'], P['cream'], 1.0)
              + box(-12, 60, 9, 9, 9, 8, P['goldL'], P['goldD'], P['gold'], O),
-             'walk', '--sx:%.1fpx;--sy:%.1fpx' % (wx0 - wx1, wy0 - wy1)), 'd3')
+             'walk', '--sx:%.1fpx;--sy:%.1fpx;--wx:%.1f;--wy:%.1f' % (wx0 - wx1, wy0 - wy1, -70 - -22, 104 - 52)), 'd3')
     s += A(arrow((-42, 66, 2), (-4, 34, 2), O, P['paper'], 2.2), 'a a-in d4')
     s += A(figure(58, 40, 0, O, P['teal'], P['cream'], .9), 'a a-in d6')
     s += A(plate(20, 60, 214, 82, '1 . APPROACH', ['drug arrives', 'in the blood'], P['gold']), 'a a-stamp d3')
@@ -224,8 +237,8 @@ def s07():
 def s08():
     O = (338, 244); s = ''
     s += floor(-164, -164, 328, 2, P['navy'], O, 9)
-    core = cylinder(-84, -20, 34, 0, 24, P['navyXL'], P['navyL'], O)
-    core += dome(-84, -20, 34, 24, 26, P['navyL'], O, rim=P['navy'])
+    core = (glass_drum(-84, -20, 34, 0, 24, O, P['navyXL']) if ISO.MODE == '3d' else cylinder(-84, -20, 34, 0, 24, P['navyXL'], P['navyL'], O))
+    core += dome(-84, -20, 34, 24, 26, P['navyL'], O, rim=P['navy'], cut=True)
     core += L(cylinder(-84, -20, 13, 8, 18, P['gold'], P['goldD'], O), 'pulse')
     core += ring(-84, -20, 22, 26, P['goldL'], 2.2, O, ' opacity=".8"')
     s += A(core, 'a a-l d1')
@@ -301,7 +314,8 @@ def s10():
     for i in range(4):
         px, py = pt(-108 + i * 72, 108 - i * 72, -22, O)
         t0 = DL[min(i * 2 + 1, 6)]
-        s += A(count(px, py, 7.4 * (i + 1), 1, '', t0, t0 + .9, 13, P['paper'], 7.4 * i), 'a a-in d%d' % (2 + i * 2))
+        s += A(count(px, py, 7.4 * (i + 1), 1, '', t0, t0 + .9, 13, P['paper'], 7.4 * i,
+                     w=(-108 + i * 72 + 50, 108 - i * 72 + 50, 1)), 'a a-in d%d' % (2 + i * 2))
     s += A(stack(150, 150, O, 4, P['gold'], 11, 28), 'd9')
     s += A(plate(408, 48, 288, 106, 'FOUR CYCLES, q8 WEEKS',
                  ['7.4 GBq each', '29.6 GBq cumulative', 'counts checked before each'], P['gold']), 'a a-stamp d3')
@@ -323,6 +337,8 @@ def s11():
         ty = py - 30 * EY - 16             # clear of the cap ellipse
         tag = ('<rect x="%.0f" y="%.0f" width="86" height="30" fill="%s" stroke="%s" stroke-width="1.5"/>'
                % (px - 43, ty - 21, P['cream'], P['ink']))
+        if ISO.MODE == '3d':
+            return L(g, 'grow'), m3('tag', x=x, y=y, h=h, pct=pct, t0=t0, t1=t0 + 1.4)
         tag += count(px, ty, pct, 1, '%', t0, t0 + 1.4, 17)
         # the bar scales up from its base, so its top travels its whole bounding height
         return L(g, 'grow'), L(tag, 'ride', '--gh:%.1fpx' % (h + 2 * 30 * EY))
@@ -349,6 +365,11 @@ def s12():
         s += A(cylinder(x, y, r, 0, 12, P['plumD'], shade(P['plum'], .6), O)
                + dome(x, y, r, 12, r * .85, P['plum'], O, rim=P['plumD']), 'a a-drop d%d' % (1 + i * 2))
         px, py = pt(x, y, 12 + r * 0.85 + 16, O)
+        if ISO.MODE == '3d':
+            s += A(m3('label', w=[x + r * .7, y + r * .7, 2], text=lbl, size=10.5, fill=P['paper']), 'a a-in d%d' % (2 + i * 2))
+            if i < 3:
+                s += A(arrow((x + r + 8, y - r - 8, 2), (x + 58, y - 58, 2), O, P['paper'], 1.8), 'a a-in d%d' % (2 + i * 2))
+            continue
         s += A('<text x="%.0f" y="%.0f" text-anchor="middle" font-family="IBM Plex Mono, monospace" '
                'font-size="10.5" fill="%s">%s</text>' % (px, py, P['paper'], lbl), 'a a-in d%d' % (2 + i * 2))
         if i < 3:
@@ -369,7 +390,7 @@ def s13():
     hero = cylinder(0, 0, 44, 0, 8, P['navyL'], shade(P['navy'], .78), O)
     hero += glass_drum(0, 0, 32, 8, 26, O)
     hero += cylinder(0, 0, 10, 10, 16, P['gold'], P['goldD'], O)
-    hero += dome(0, 0, 34, 34, 30, P['teal'], O, rim=P['tealD'])
+    hero += dome(0, 0, 34, 34, 30, P['teal'], O, rim=P['tealD'], cut=True)
     s += A(hero, 'a a-drop d1')
     s += A(lightcone(0, 0, 40, O, -86, -86, 52, P['paper']), 'a a-in d3')
     s += A(plate(96, 58, 528, 148, 'EDUCATIONAL MATERIAL',
