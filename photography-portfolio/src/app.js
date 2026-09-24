@@ -241,7 +241,8 @@
   if (linked >= 0) open(linked);
 })();
 
-// --- dot field: a quiet swell across the page; the pointer eases it -----
+// --- dot field: rows sway in sync, neighbours in opposite directions ----
+// Kept out of the photo section so nothing sits over or between the photos.
 (() => {
   const canvas = document.getElementById("dots");
   if (!canvas) return;
@@ -250,6 +251,10 @@
   const GAP = 26;     // px between dots
   const REACH = 110;  // how far the pointer's pull is felt
   const RING_SPEED = 170, RING_LIFE = 1.8;
+  const SWAY = 3.5;   // px each row travels either side of its rest position
+  const PERIOD = 9;   // seconds for one full sway
+  const FADE = 56;    // px over which dots fade out before the photo section
+  const work = document.getElementById("work");
   let w = 0, h = 0, t = 0, last = 0, raf = 0, frames = 0;
   let dot = "#d0d0c9", accent = [46, 94, 80];
   const p = { x: -1e4, y: -1e4, tx: -1e4, ty: -1e4, on: 0, target: 0 };
@@ -282,15 +287,24 @@
       const age = t - r.t0;
       return { x: r.x, y: r.y - sy, rad: age * RING_SPEED, amp: r.amp * (1 - age / RING_LIFE) ** 2 };
     });
+    const wr = work ? work.getBoundingClientRect() : null;
+    // One shared, eased sway for every row; odd rows mirror it.
+    const sway = SWAY * Math.sin((t / PERIOD) * Math.PI * 2);
     const y0 = -((sy % GAP) + GAP);
     for (let gy = y0; gy < h + GAP; gy += GAP) {
-      const wy = gy + sy; // page position, so the swell scrolls with the content
+      // Fade rows out as they approach the photo section; skip them inside it.
+      let size = 1;
+      if (wr) {
+        const out = gy < wr.top ? wr.top - gy : gy > wr.bottom ? gy - wr.bottom : 0;
+        size = Math.min(1, out / FADE);
+        if (size < 0.15) continue;
+      }
+      const row = Math.round((gy + sy) / GAP);
+      const shift = row % 2 ? sway : -sway;
       for (let gx = GAP / 2; gx < w + GAP; gx += GAP) {
-        // The swell: a long, slow diagonal wave that lifts and grows the dots.
-        const swell = Math.sin(gx * 0.008 + wy * 0.006 - t * 0.6);
-        let x = gx;
-        let y = gy + 2 * swell;
-        let r = 0.85 + 0.35 * (swell + 1) / 2;
+        let x = gx + shift;
+        let y = gy;
+        let r = 0.95 * size;
         let glow = 0;
         // Near the pointer: dots ease outward a little and pick up the accent.
         const dx = gx - p.x, dy = gy - p.y;
@@ -300,7 +314,7 @@
           const near = p.on * Math.exp(-d2 / sigma2);
           x += (dx / d) * near * 7;
           y += (dy / d) * near * 7;
-          r += near * 0.9;
+          r += near * 0.9 * size;
           glow = near;
         }
         // Rings: a thin band of dots lifts as each ring passes.
@@ -311,7 +325,7 @@
           if (band > 0.01) {
             x += (rx / rd) * band * 3;
             y += (ry / rd) * band * 3;
-            r += band * 0.6;
+            r += band * 0.6 * size;
             glow = Math.max(glow, band * 0.6);
           }
         }
