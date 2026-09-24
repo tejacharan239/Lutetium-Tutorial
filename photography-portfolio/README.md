@@ -1,19 +1,23 @@
 # Photography portfolio
 
-A one-page portfolio for photographs made on a phone. You add photos to a
+A minimal one-page portfolio for photographs made on a phone. You add photos to a
 folder and edit one settings file. The build resizes everything for the web,
 removes location data from the published images, and writes each photo's
 camera readout (lens, shutter, ISO) under it.
 
+On the page: filters by category, a grid or one-at-a-time layout, a light
+and dark theme, and a viewer with swipe, double-tap zoom and each photo's
+colour palette. The page background takes a faint tint from the photo you
+are looking at.
+
 ```
-portfolio/
-  photos/          your photos; a subfolder name becomes a category
-    street/
-    landscape/
-  site.json        your name, intro, about text, contact details
-  build.py         turns the two above into a website in _site/
-  samples.py       placeholder images, used only while photos/ is empty
-  src/             the page's stylesheet and script
+photos/          your photos; a subfolder name becomes a category
+  street/
+  landscape/
+site.json        your name, intro, about text, contact details
+build.py         turns the two above into a website in _site/
+samples.py       placeholder images, used only while photos/ is empty
+src/             the page's stylesheet and script
 ```
 
 ## Add photos
@@ -26,11 +30,11 @@ portfolio/
 
    The published site never includes location either way; the build strips it
    and warns about any original that still carries it.
-2. Put the photos in `portfolio/photos/`, one subfolder per category:
+2. Put the photos in `photos/`, one subfolder per category:
    `photos/street/`, `photos/night/`, `photos/landscape/`. Photos placed
    directly in `photos/` have no category. With two or more categories, the
    page shows filters.
-   - From a phone: open the repository on github.com → `portfolio/photos/` →
+   - From a phone: open the repository on github.com → `photos/` →
      the folder → **Add file → Upload files**.
    - JPEG, PNG, WebP and iPhone HEIC files all work. Keep each file under
      25 MB (GitHub's upload limit).
@@ -44,14 +48,15 @@ Photos appear newest first, by the date the phone recorded.
 
 | Field | What it does |
 |---|---|
-| `name`, `tagline`, `intro` | The big name, the line above it and the paragraph below it |
+| `name`, `intro` | The opening sentence: your name, then the intro in a softer colour |
+| `tagline` | The small line under it, e.g. `"Mobile photography"` |
 | `location` | Shown next to the tagline, e.g. `"Lisbon"` |
 | `url` | Your live address, e.g. `"https://yourname.com"`. Used for link previews and the sitemap |
 | `email`, `instagram` | Contact section. Leave `instagram` empty to hide it; give the handle without `@` |
 | `about` | Paragraphs of the About section |
 | `kit` | Rows under About: `["Phone", "Pixel 8 Pro"]` |
 | `camera_names` | Friendlier names for phone model codes: `"SM-S918B": "Galaxy S23 Ultra"` |
-| `featured` | The photo in the viewfinder at the top, e.g. `"night/moonrise.jpg"`. Empty means the newest |
+| `featured` | The photo shown when the link is shared (WhatsApp, X, LinkedIn), e.g. `"night/moonrise.jpg"`. Empty means the first |
 | `order` | Photos to show first, in this order. The rest follow newest first |
 | `photos` | Per-photo title, caption and alt text (see below) |
 
@@ -73,21 +78,21 @@ mistake, the build names the line.
 ## Build and preview locally
 
 ```
-pip install -r portfolio/requirements.txt
-python portfolio/build.py --out _site
+pip install -r requirements.txt
+python build.py --out _site
 python -m http.server -d _site 8000     # then open http://localhost:8000
 ```
 
 ## Publish with GitHub Pages
 
-`.github/workflows/portfolio.yml` builds the site on every change under
-`portfolio/` and publishes it from the repository's default branch. Other
-branches only check that the build works.
+`.github/workflows/deploy.yml` builds the site on every push and publishes
+it from the repository's default branch. Other branches only check that the
+build works.
 
 1. The repository must be public, unless you have GitHub Pro.
 2. In the repository, open **Settings → Pages** and set **Source** to
    **GitHub Actions**.
-3. Merge into the default branch, or run the **Portfolio** workflow from the
+3. Merge into the default branch, or run the **Build and deploy** workflow from the
    Actions tab. The site appears at
    `https://<your-username>.github.io/<repository-name>/`.
 
