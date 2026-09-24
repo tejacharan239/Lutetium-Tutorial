@@ -363,6 +363,7 @@ def page(cfg, photos, sample_mode, preview):
     {f'<p class="meta">{e(meta_line)}</p>' if meta_line else ""}
     {notice}
   </section>
+  <div class="waves" aria-hidden="true"><canvas id="waves"></canvas></div>
   <section class="work" id="work" aria-label="Photographs">
     <div class="bar">
       {chips}

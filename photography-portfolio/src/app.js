@@ -240,3 +240,128 @@
   const linked = photos.findIndex((p) => "#" + p.id === location.hash);
   if (linked >= 0) open(linked);
 })();
+
+// --- wave band: broken lines on a slow swell; the pointer stirs them ---
+(() => {
+  const canvas = document.getElementById("waves");
+  if (!canvas) return;
+  const band = canvas.parentElement;
+  const ctx = canvas.getContext("2d");
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const GAP = 13;   // px between lines
+  const STEP = 5;   // px between samples along a line
+  const R = 200;    // reach of the pointer
+  let w = 0, h = 0, t = 0, last = 0, raf = 0, frames = 0, onScreen = true;
+  let line = "#a2a29b", hot = [46, 94, 80];
+  const p = { x: -1e4, y: -1e4, tx: -1e4, ty: -1e4, on: 0, target: 0 };
+
+  function readColours() {
+    const cs = getComputedStyle(document.documentElement);
+    line = cs.getPropertyValue("--faint").trim() || line;
+    const a = cs.getPropertyValue("--accent").trim().replace("#", "");
+    if (a.length === 6) hot = [0, 2, 4].map((i) => parseInt(a.slice(i, i + 2), 16));
+  }
+  function resize() {
+    const r = band.getBoundingClientRect();
+    const dpr = Math.min(2, devicePixelRatio || 1);
+    w = r.width;
+    h = r.height;
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    const rows = Math.ceil(h / GAP) + 2;
+    const sigma2 = 2 * (R / 2) ** 2;
+    let glow = null;
+    if (p.on > 0.01) {
+      glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, R);
+      glow.addColorStop(0, `rgba(${hot},${p.on})`);
+      glow.addColorStop(1, `rgba(${hot},0)`);
+    }
+    for (let i = -1; i < rows; i++) {
+      const base = i * GAP + GAP / 2;
+      const dir = i % 2 ? 1 : -1;
+      const path = new Path2D();
+      let pen = false;
+      for (let x = -STEP; x <= w + STEP; x += STEP) {
+        const dx = x - p.x;
+        const dy = base - p.y;
+        const d = Math.hypot(dx, dy);
+        const near = p.on * Math.exp(-(d * d) / sigma2); // 0 far away, up to 1 under the pointer
+        // The swell: two slow waves travelling in opposite directions.
+        let y = base
+          + 8 * Math.sin(x * 0.010 + t * 0.8 + i * 0.42)
+          + 4 * Math.sin(x * 0.024 - t * 1.25 + i * 0.95);
+        // Under the pointer: a ring ripple and lines parting around it.
+        y += near * (22 * Math.sin(d * 0.075 - t * 5) + Math.sign(dy || 1) * 11);
+        // Breaks: dashes drift along each line and shorten near the pointer;
+        // a slow second pattern opens longer gaps now and then.
+        const period = 52 - 34 * near;
+        const duty = 0.8 - 0.45 * near - 0.35 * Math.max(0, Math.sin(x * 0.0045 + i * 1.7 + t * 0.25));
+        const phase = (x + i * 37 + dir * t * 16) / period;
+        if (phase - Math.floor(phase) < duty) {
+          pen ? path.lineTo(x, y) : path.moveTo(x, y);
+          pen = true;
+        } else {
+          pen = false;
+        }
+      }
+      ctx.lineWidth = 1.1;
+      ctx.strokeStyle = line;
+      ctx.stroke(path);
+      if (glow) {
+        ctx.lineWidth = 1.7;
+        ctx.strokeStyle = glow;
+        ctx.stroke(path);
+      }
+    }
+  }
+
+  function frame(now) {
+    const dt = Math.min(50, now - (last || now));
+    last = now;
+    t += dt / 1000;
+    p.x += (p.tx - p.x) * 0.14;
+    p.y += (p.ty - p.y) * 0.14;
+    p.on += (p.target - p.on) * 0.05;
+    if (++frames % 30 === 0) readColours(); // follows the theme toggle
+    draw();
+    raf = onScreen && !document.hidden ? requestAnimationFrame(frame) : 0;
+  }
+  function run() {
+    if (still) return draw();
+    if (!raf && onScreen && !document.hidden) {
+      last = 0;
+      raf = requestAnimationFrame(frame);
+    }
+  }
+
+  // Track the pointer anywhere near the band, so moving across the intro stirs it too.
+  addEventListener("pointermove", (ev) => {
+    const r = band.getBoundingClientRect();
+    const x = ev.clientX - r.left;
+    const y = ev.clientY - r.top;
+    const inReach = x > -R && x < r.width + R && y > -R && y < r.height + R;
+    if (inReach && p.target === 0 && p.on < 0.05) { p.x = x; p.y = y; } // no sweep in from the old spot
+    p.tx = x;
+    p.ty = y;
+    p.target = inReach ? 1 : 0;
+    if (still) { p.x = x; p.y = y; p.on = p.target; draw(); }
+  }, { passive: true });
+  const release = () => { p.target = 0; if (still) { p.on = 0; draw(); } };
+  document.addEventListener("pointerleave", release);
+  band.addEventListener("pointerup", (ev) => { if (ev.pointerType !== "mouse") release(); });
+  band.addEventListener("pointercancel", release);
+
+  new IntersectionObserver(([en]) => { onScreen = en.isIntersecting; run(); }).observe(band);
+  document.addEventListener("visibilitychange", run);
+  new ResizeObserver(resize).observe(band);
+  document.getElementById("theme")?.addEventListener("click", () => requestAnimationFrame(() => { readColours(); draw(); }));
+  readColours();
+  resize();
+  run();
+})();
