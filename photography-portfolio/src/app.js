@@ -276,7 +276,7 @@
   const FADE = 56;    // px over which dots fade out before the photo section
   const work = document.getElementById("work");
   let w = 0, h = 0, t = 0, last = 0, raf = 0, frames = 0;
-  let dot = "#d0d0c9", accent = [46, 94, 80];
+  let dot = "#c6cedd", accent = [192, 97, 47];
   const p = { x: -1e4, y: -1e4, tx: -1e4, ty: -1e4, on: 0, target: 0 };
   const rings = []; // { x, y (page coords), t0, amp }
   let lastRing = { x: -1e4, y: -1e4, t: -10 };

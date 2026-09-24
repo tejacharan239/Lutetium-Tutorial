@@ -49,9 +49,9 @@ EXTS = {".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif"}
 CAMERA_FILENAME = re.compile(r"^(img|dsc|dscf|pxl|mvimg|photo|image|screenshot|whatsapp image)?[\s_-]*\d", re.I)
 FONTS = "https://fonts.googleapis.com/css2?family=Geist:wght@300..600&family=Geist+Mono:wght@400;500&display=swap"
 FAVICON = ("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'>"
-           "<rect width='32' height='32' rx='8' fill='#1b1b19'/>"
-           "<circle cx='16' cy='16' r='7' fill='none' stroke='#f5f5f2' stroke-width='2.2'/>"
-           "<circle cx='16' cy='16' r='2.4' fill='#8fcbb5'/></svg>")
+           "<rect width='32' height='32' rx='8' fill='#1b2340'/>"
+           "<circle cx='16' cy='16' r='7' fill='none' stroke='#edf0f5' stroke-width='2.2'/>"
+           "<circle cx='16' cy='16' r='2.4' fill='#f0a070'/></svg>")
 
 e = html.escape
 warnings = []

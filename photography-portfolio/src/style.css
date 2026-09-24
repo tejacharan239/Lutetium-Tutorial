@@ -1,21 +1,22 @@
-/* Quiet neutrals so the photographs carry the colour. One accent, pine,
-   marks what is active. The page ground takes a faint tint from whichever
+/* Blue hour meets golden hour: a cool mist ground and deep navy ink in
+   place of grey and black, with one warm apricot accent for what is
+   active. Dark mode is midnight navy. The page ground takes a faint tint from whichever
    photo you are looking at (--tint, set by app.js). */
 @property --tint { syntax: "<color>"; inherits: true; initial-value: transparent; }
 @property --tint-on { syntax: "<number>"; inherits: true; initial-value: 0; }
 @property --lb-c { syntax: "<color>"; inherits: true; initial-value: #000; }
 
 :root {
-  --bg: #f5f5f2;
-  --bg-2: #ebebe6;
-  --ink: #1b1b19;
-  --muted: #6d6d67;
-  --faint: #a2a29b;
-  --line: #e1e1db;
-  --accent: #2e5e50;
+  --bg: #edf0f5;
+  --bg-2: #e0e5ee;
+  --ink: #1b2340;
+  --muted: #5a6482;
+  --faint: #98a1ba;
+  --line: #d4dae6;
+  --accent: #c0612f;
   --tint-max: 10%;
-  --on-photo: #f7f7f4;
-  --dot: #d0d0c9;
+  --on-photo: #f7f8fb;
+  --dot: #c6cedd;
 
   --sans: "Geist", "Helvetica Neue", Arial, sans-serif;
   --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -28,28 +29,28 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --bg: #101211;
-    --bg-2: #1a1d1b;
-    --ink: #e7eae6;
-    --muted: #8d938e;
-    --faint: #5b615c;
-    --line: #242825;
-    --accent: #8fcbb5;
+    --bg: #0f1424;
+    --bg-2: #182039;
+    --ink: #e6eaf4;
+    --muted: #8e97b3;
+    --faint: #525c7e;
+    --line: #232c47;
+    --accent: #f0a070;
     --tint-max: 16%;
-    --dot: #353a37;
+    --dot: #2a3352;
   }
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #101211;
-  --bg-2: #1a1d1b;
-  --ink: #e7eae6;
-  --muted: #8d938e;
-  --faint: #5b615c;
-  --line: #242825;
-  --accent: #8fcbb5;
+  --bg: #0f1424;
+  --bg-2: #182039;
+  --ink: #e6eaf4;
+  --muted: #8e97b3;
+  --faint: #525c7e;
+  --line: #232c47;
+  --accent: #f0a070;
   --tint-max: 16%;
-  --dot: #353a37;
+  --dot: #2a3352;
 }
 @media (min-width: 700px) { :root { --row: 250px; } }
 @media (min-width: 1200px) { :root { --row: 310px; } }
@@ -336,7 +337,7 @@ dd { margin: 0; }
   transition: opacity 0.25s, transform 0.35s var(--ease);
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
-.lb[open] ~ .toast { background: #f2f2ef; color: #121212; }
+.lb[open] ~ .toast { background: #eef1f7; color: #141a30; }
 
 /* Viewer: the ground is a deep shade of the photo on screen. ------------ */
 .lb {
@@ -349,14 +350,14 @@ dd { margin: 0; }
   margin: 0;
   padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px);
   border: 0;
-  background: color-mix(in oklab, var(--lb-c) 18%, #0b0b0b);
+  background: color-mix(in oklab, var(--lb-c) 18%, #0a0d18);
   color: #efefec;
   color-scheme: dark;
   transition: --lb-c 0.6s var(--ease);
 }
 .lb[open] { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; animation: lb-in 0.3s var(--ease); }
 @keyframes lb-in { from { opacity: 0; } }
-.lb::backdrop { background: #0b0b0b; }
+.lb::backdrop { background: #0a0d18; }
 .lb .icon { color: rgba(255, 255, 255, 0.7); }
 .lb .icon:hover { color: #fff; background: rgba(255, 255, 255, 0.1); }
 .lb-top { display: flex; align-items: center; gap: 16px; padding: 10px var(--gutter); }
