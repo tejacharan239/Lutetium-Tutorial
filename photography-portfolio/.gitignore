@@ -1,0 +1,4 @@
+# build output and image cache: regenerate with build.py
+_site/
+.cache/
+__pycache__/

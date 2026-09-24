@@ -1,0 +1,30 @@
+{
+  "name": "Your Name",
+  "tagline": "Mobile photography",
+  "intro": "Photographs made with the phone in my pocket: streets after rain, hills before sunrise, and the light in between.",
+  "location": "",
+  "url": "",
+  "email": "you@example.com",
+  "instagram": "",
+  "about": [
+    "I photograph with nothing but my phone. It is always with me, it is quiet, and nobody on the street treats it as a camera.",
+    "Most of these pictures were made on walks, on the way to somewhere else. I edit on the phone too, and keep it light: exposure, colour, a crop."
+  ],
+  "portrait": "portrait.jpg",
+  "kit": [
+    [
+      "Phone",
+      "Your phone model"
+    ],
+    [
+      "Editing",
+      "Lightroom Mobile, Snapseed"
+    ]
+  ],
+  "camera_names": {
+    "SM-S918B": "Galaxy S23 Ultra"
+  },
+  "featured": "",
+  "order": [],
+  "photos": {}
+}
