@@ -241,31 +241,31 @@
   if (linked >= 0) open(linked);
 })();
 
-// --- wave band: broken lines on a slow swell; the pointer stirs them ---
+// --- dot field: a quiet swell across the page; the pointer eases it -----
 (() => {
-  const canvas = document.getElementById("waves");
+  const canvas = document.getElementById("dots");
   if (!canvas) return;
-  const band = canvas.parentElement;
   const ctx = canvas.getContext("2d");
   const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const GAP = 13;   // px between lines
-  const STEP = 5;   // px between samples along a line
-  const R = 200;    // reach of the pointer
-  let w = 0, h = 0, t = 0, last = 0, raf = 0, frames = 0, onScreen = true;
-  let line = "#a2a29b", hot = [46, 94, 80];
+  const GAP = 26;     // px between dots
+  const REACH = 110;  // how far the pointer's pull is felt
+  const RING_SPEED = 170, RING_LIFE = 1.8;
+  let w = 0, h = 0, t = 0, last = 0, raf = 0, frames = 0;
+  let dot = "#d0d0c9", accent = [46, 94, 80];
   const p = { x: -1e4, y: -1e4, tx: -1e4, ty: -1e4, on: 0, target: 0 };
+  const rings = []; // { x, y (page coords), t0, amp }
+  let lastRing = { x: -1e4, y: -1e4, t: -10 };
 
   function readColours() {
     const cs = getComputedStyle(document.documentElement);
-    line = cs.getPropertyValue("--faint").trim() || line;
+    dot = cs.getPropertyValue("--dot").trim() || dot;
     const a = cs.getPropertyValue("--accent").trim().replace("#", "");
-    if (a.length === 6) hot = [0, 2, 4].map((i) => parseInt(a.slice(i, i + 2), 16));
+    if (a.length === 6) accent = [0, 2, 4].map((i) => parseInt(a.slice(i, i + 2), 16));
   }
   function resize() {
-    const r = band.getBoundingClientRect();
     const dpr = Math.min(2, devicePixelRatio || 1);
-    w = r.width;
-    h = r.height;
+    w = innerWidth;
+    h = innerHeight;
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -274,92 +274,102 @@
 
   function draw() {
     ctx.clearRect(0, 0, w, h);
-    const rows = Math.ceil(h / GAP) + 2;
-    const sigma2 = 2 * (R / 2) ** 2;
-    let glow = null;
-    if (p.on > 0.01) {
-      glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, R);
-      glow.addColorStop(0, `rgba(${hot},${p.on})`);
-      glow.addColorStop(1, `rgba(${hot},0)`);
-    }
-    for (let i = -1; i < rows; i++) {
-      const base = i * GAP + GAP / 2;
-      const dir = i % 2 ? 1 : -1;
-      const path = new Path2D();
-      let pen = false;
-      for (let x = -STEP; x <= w + STEP; x += STEP) {
-        const dx = x - p.x;
-        const dy = base - p.y;
-        const d = Math.hypot(dx, dy);
-        const near = p.on * Math.exp(-(d * d) / sigma2); // 0 far away, up to 1 under the pointer
-        // The swell: two slow waves travelling in opposite directions.
-        let y = base
-          + 8 * Math.sin(x * 0.010 + t * 0.8 + i * 0.42)
-          + 4 * Math.sin(x * 0.024 - t * 1.25 + i * 0.95);
-        // Under the pointer: a ring ripple and lines parting around it.
-        y += near * (22 * Math.sin(d * 0.075 - t * 5) + Math.sign(dy || 1) * 11);
-        // Breaks: dashes drift along each line and shorten near the pointer;
-        // a slow second pattern opens longer gaps now and then.
-        const period = 52 - 34 * near;
-        const duty = 0.8 - 0.45 * near - 0.35 * Math.max(0, Math.sin(x * 0.0045 + i * 1.7 + t * 0.25));
-        const phase = (x + i * 37 + dir * t * 16) / period;
-        if (phase - Math.floor(phase) < duty) {
-          pen ? path.lineTo(x, y) : path.moveTo(x, y);
-          pen = true;
-        } else {
-          pen = false;
+    const sy = scrollY;
+    const sigma2 = 2 * (REACH / 2) ** 2;
+    const base = new Path2D();
+    const lit = [new Path2D(), new Path2D(), new Path2D()]; // three accent strengths
+    const live = rings.map((r) => {
+      const age = t - r.t0;
+      return { x: r.x, y: r.y - sy, rad: age * RING_SPEED, amp: r.amp * (1 - age / RING_LIFE) ** 2 };
+    });
+    const y0 = -((sy % GAP) + GAP);
+    for (let gy = y0; gy < h + GAP; gy += GAP) {
+      const wy = gy + sy; // page position, so the swell scrolls with the content
+      for (let gx = GAP / 2; gx < w + GAP; gx += GAP) {
+        // The swell: a long, slow diagonal wave that lifts and grows the dots.
+        const swell = Math.sin(gx * 0.008 + wy * 0.006 - t * 0.6);
+        let x = gx;
+        let y = gy + 2 * swell;
+        let r = 0.85 + 0.35 * (swell + 1) / 2;
+        let glow = 0;
+        // Near the pointer: dots ease outward a little and pick up the accent.
+        const dx = gx - p.x, dy = gy - p.y;
+        const d2 = dx * dx + dy * dy;
+        if (p.on > 0.01 && d2 < REACH * REACH * 4) {
+          const d = Math.sqrt(d2) || 1;
+          const near = p.on * Math.exp(-d2 / sigma2);
+          x += (dx / d) * near * 7;
+          y += (dy / d) * near * 7;
+          r += near * 0.9;
+          glow = near;
         }
-      }
-      ctx.lineWidth = 1.1;
-      ctx.strokeStyle = line;
-      ctx.stroke(path);
-      if (glow) {
-        ctx.lineWidth = 1.7;
-        ctx.strokeStyle = glow;
-        ctx.stroke(path);
+        // Rings: a thin band of dots lifts as each ring passes.
+        for (const ring of live) {
+          const rx = gx - ring.x, ry = gy - ring.y;
+          const rd = Math.sqrt(rx * rx + ry * ry) || 1;
+          const band = Math.exp(-((rd - ring.rad) ** 2) / 180) * ring.amp;
+          if (band > 0.01) {
+            x += (rx / rd) * band * 3;
+            y += (ry / rd) * band * 3;
+            r += band * 0.6;
+            glow = Math.max(glow, band * 0.6);
+          }
+        }
+        const path = glow > 0.55 ? lit[2] : glow > 0.3 ? lit[1] : glow > 0.08 ? lit[0] : base;
+        path.moveTo(x + r, y);
+        path.arc(x, y, r, 0, Math.PI * 2);
       }
     }
+    ctx.fillStyle = dot;
+    ctx.fill(base);
+    [0.35, 0.6, 0.9].forEach((alpha, i) => {
+      ctx.fillStyle = `rgba(${accent},${alpha})`;
+      ctx.fill(lit[i]);
+    });
   }
 
   function frame(now) {
     const dt = Math.min(50, now - (last || now));
     last = now;
     t += dt / 1000;
-    p.x += (p.tx - p.x) * 0.14;
-    p.y += (p.ty - p.y) * 0.14;
-    p.on += (p.target - p.on) * 0.05;
+    p.x += (p.tx - p.x) * 0.12;
+    p.y += (p.ty - p.y) * 0.12;
+    p.on += (p.target - p.on) * 0.06;
+    while (rings.length && t - rings[0].t0 > RING_LIFE) rings.shift();
     if (++frames % 30 === 0) readColours(); // follows the theme toggle
     draw();
-    raf = onScreen && !document.hidden ? requestAnimationFrame(frame) : 0;
+    raf = document.hidden ? 0 : requestAnimationFrame(frame);
   }
   function run() {
     if (still) return draw();
-    if (!raf && onScreen && !document.hidden) {
+    if (!raf && !document.hidden) {
       last = 0;
       raf = requestAnimationFrame(frame);
     }
   }
+  function ring(x, y, amp) {
+    if (still) return;
+    rings.push({ x, y: y + scrollY, t0: t, amp });
+    if (rings.length > 4) rings.shift();
+    lastRing = { x, y, t };
+  }
 
-  // Track the pointer anywhere near the band, so moving across the intro stirs it too.
   addEventListener("pointermove", (ev) => {
-    const r = band.getBoundingClientRect();
-    const x = ev.clientX - r.left;
-    const y = ev.clientY - r.top;
-    const inReach = x > -R && x < r.width + R && y > -R && y < r.height + R;
-    if (inReach && p.target === 0 && p.on < 0.05) { p.x = x; p.y = y; } // no sweep in from the old spot
-    p.tx = x;
-    p.ty = y;
-    p.target = inReach ? 1 : 0;
-    if (still) { p.x = x; p.y = y; p.on = p.target; draw(); }
+    if (p.target === 0 && p.on < 0.05) { p.x = ev.clientX; p.y = ev.clientY; } // no sweep in from the old spot
+    p.tx = ev.clientX;
+    p.ty = ev.clientY;
+    p.target = 1;
+    // A soft ring now and then while the pointer travels.
+    if (t - lastRing.t > 1.1 && Math.hypot(ev.clientX - lastRing.x, ev.clientY - lastRing.y) > 140) ring(ev.clientX, ev.clientY, 0.6);
+    if (still) { p.x = p.tx; p.y = p.ty; p.on = 1; draw(); }
   }, { passive: true });
+  addEventListener("pointerdown", (ev) => ring(ev.clientX, ev.clientY, 1), { passive: true });
   const release = () => { p.target = 0; if (still) { p.on = 0; draw(); } };
   document.addEventListener("pointerleave", release);
-  band.addEventListener("pointerup", (ev) => { if (ev.pointerType !== "mouse") release(); });
-  band.addEventListener("pointercancel", release);
-
-  new IntersectionObserver(([en]) => { onScreen = en.isIntersecting; run(); }).observe(band);
+  addEventListener("pointerup", (ev) => { if (ev.pointerType !== "mouse") release(); }, { passive: true });
+  if (still) addEventListener("scroll", draw, { passive: true });
+  addEventListener("resize", resize);
   document.addEventListener("visibilitychange", run);
-  new ResizeObserver(resize).observe(band);
   document.getElementById("theme")?.addEventListener("click", () => requestAnimationFrame(() => { readColours(); draw(); }));
   readColours();
   resize();

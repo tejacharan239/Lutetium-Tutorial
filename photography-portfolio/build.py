@@ -352,6 +352,7 @@ def page(cfg, photos, sample_mode, preview):
     js = (SRC / "app.js").read_text()
     year = date.today().year
     body = f"""<a class="skip" href="#work">Skip to the photographs</a>
+<canvas class="dots" id="dots" aria-hidden="true"></canvas>
 <header class="top" id="top">
   <a class="mark" href="#top">{e(name)}</a>
   <nav aria-label="Sections"><a href="#work">Work</a><a href="#about">About</a><a href="#contact">Contact</a></nav>
@@ -363,7 +364,6 @@ def page(cfg, photos, sample_mode, preview):
     {f'<p class="meta">{e(meta_line)}</p>' if meta_line else ""}
     {notice}
   </section>
-  <div class="waves" aria-hidden="true"><canvas id="waves"></canvas></div>
   <section class="work" id="work" aria-label="Photographs">
     <div class="bar">
       {chips}

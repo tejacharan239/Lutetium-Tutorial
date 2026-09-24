@@ -15,6 +15,7 @@
   --accent: #2e5e50;
   --tint-max: 10%;
   --on-photo: #f7f7f4;
+  --dot: #d0d0c9;
 
   --sans: "Geist", "Helvetica Neue", Arial, sans-serif;
   --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -35,6 +36,7 @@
     --line: #242825;
     --accent: #8fcbb5;
     --tint-max: 16%;
+    --dot: #353a37;
   }
 }
 :root[data-theme="dark"] {
@@ -47,6 +49,7 @@
   --line: #242825;
   --accent: #8fcbb5;
   --tint-max: 16%;
+  --dot: #353a37;
 }
 @media (min-width: 700px) { :root { --row: 250px; } }
 @media (min-width: 1200px) { :root { --row: 310px; } }
@@ -127,20 +130,9 @@ svg { display: block; }
 .notice { margin: 10px 0 0; color: var(--faint); font: 400 0.75rem var(--mono); }
 .notice code { color: var(--muted); font: inherit; }
 
-/* Wave band: broken lines drifting in a swell; the pointer stirs them. */
-.waves {
-  position: relative;
-  height: clamp(150px, 22vw, 280px);
-  margin: 0 calc(-1 * var(--gutter)) clamp(8px, 2vw, 24px);
-  touch-action: pan-y;
-  --fade-x: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-  --fade-y: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
-  -webkit-mask-image: var(--fade-x), var(--fade-y);
-  -webkit-mask-composite: source-in;
-  mask-image: var(--fade-x), var(--fade-y);
-  mask-composite: intersect;
-}
-.waves canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+/* Dot field: a fixed canvas behind everything, drawn by app.js. */
+.dots { position: fixed; inset: 0; z-index: 0; width: 100%; height: 100%; pointer-events: none; }
+.top, main, .foot { position: relative; z-index: 1; }
 
 /* Toolbar: filters and layout, pinned while the photos scroll ---------- */
 .bar {
