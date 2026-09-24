@@ -59,7 +59,10 @@
   labelTheme();
 
   // --- ambient tint: the page leans toward the photo you are looking at --
+  // Phones skip the page tint: repainting the whole page while scrolling costs smoothness.
+  const touch = matchMedia("(hover: none), (pointer: coarse)").matches;
   function tint(colour) {
+    if (touch) return;
     if (colour) body.style.setProperty("--tint", colour);
     body.style.setProperty("--tint-on", colour ? 1 : 0);
   }
@@ -248,6 +251,23 @@
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
   const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Touch screens use the CSS dot layer instead: it scrolls with the page
+  // natively, so nothing lags behind the finger. Only its cut-out for the
+  // photo section is measured here.
+  if (matchMedia("(hover: none), (pointer: coarse)").matches) {
+    const bed = document.getElementById("dotbed");
+    const work = document.getElementById("work");
+    const measure = () => {
+      const top = document.body.getBoundingClientRect().top;
+      const r = work.getBoundingClientRect();
+      bed.style.setProperty("--wt", `${r.top - top}px`);
+      bed.style.setProperty("--wb", `${r.bottom - top}px`);
+    };
+    new ResizeObserver(measure).observe(document.body);
+    new ResizeObserver(measure).observe(work);
+    measure();
+    return;
+  }
   const GAP = 26;     // px between dots
   const REACH = 110;  // how far the pointer's pull is felt
   const RING_SPEED = 170, RING_LIFE = 1.8;

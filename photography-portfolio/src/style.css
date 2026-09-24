@@ -133,6 +133,39 @@ svg { display: block; }
 /* Dot field: a fixed canvas behind everything, drawn by app.js. */
 .dots { position: fixed; inset: 0; z-index: 0; width: 100%; height: 100%; pointer-events: none; }
 .top, main, .foot { position: relative; z-index: 1; }
+.dotbed { display: none; }
+@media (hover: none), (pointer: coarse) {
+  /* Touch: dots are plain CSS on a layer that scrolls with the page, with the
+     photo section cut out by a mask (--wt/--wb are measured by app.js).
+     Even and odd rows are two layers swaying in opposite directions with
+     transform only, which the browser animates off the main thread. */
+  .dots { display: none; }
+  body { position: relative; }
+  .dotbed {
+    --cut: linear-gradient(180deg, #000 calc(var(--wt, 0px) - 56px), transparent var(--wt, 0px),
+      transparent var(--wb, 0px), #000 calc(var(--wb, 0px) + 56px));
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    -webkit-mask-image: var(--cut);
+    mask-image: var(--cut);
+  }
+  .dotbed i {
+    position: absolute;
+    inset: 0 -8px;
+    background: radial-gradient(circle at 13px 13px, var(--dot) 1px, transparent 1.5px) 0 0 / 26px 52px;
+    animation: sway 4.5s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  .dotbed i + i { background-position: 0 26px; animation-name: sway-back; }
+  /* A blurred sticky bar is expensive to scroll on phones; use a solid one. */
+  .bar { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--bg); }
+}
+@keyframes sway { from { transform: translateX(-3.5px); } to { transform: translateX(3.5px); } }
+@keyframes sway-back { from { transform: translateX(3.5px); } to { transform: translateX(-3.5px); } }
 
 /* Toolbar: filters and layout, pinned while the photos scroll ---------- */
 .bar {
@@ -150,6 +183,10 @@ svg { display: block; }
 }
 .chips { display: flex; gap: 4px; margin-right: auto; overflow-x: auto; scrollbar-width: none; }
 .chips::-webkit-scrollbar { display: none; }
+@media (max-width: 700px) {
+  /* The strip scrolls sideways on phones; a soft edge shows there is more. */
+  .chips { -webkit-mask-image: linear-gradient(90deg, #000 82%, transparent); mask-image: linear-gradient(90deg, #000 82%, transparent); padding-right: 24px; }
+}
 .chips button {
   flex: none;
   display: inline-flex;

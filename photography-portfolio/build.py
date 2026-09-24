@@ -353,6 +353,7 @@ def page(cfg, photos, sample_mode, preview):
     year = date.today().year
     body = f"""<a class="skip" href="#work">Skip to the photographs</a>
 <canvas class="dots" id="dots" aria-hidden="true"></canvas>
+<div class="dotbed" id="dotbed" aria-hidden="true"><i></i><i></i></div>
 <header class="top" id="top">
   <a class="mark" href="#top">{e(name)}</a>
   <nav aria-label="Sections"><a href="#work">Work</a><a href="#about">About</a><a href="#contact">Contact</a></nav>
