@@ -29,9 +29,15 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.classList.remove("show"), 1700);
   }
-  function copy(text, done, fallback) {
+  function copy(text, done, fallback, btn) {
     try {
-      navigator.clipboard.writeText(text).then(() => toast(done), fallback);
+      navigator.clipboard.writeText(text).then(() => {
+        toast(done);
+        if (btn) {
+          btn.classList.add("done");
+          setTimeout(() => btn.classList.remove("done"), 1700);
+        }
+      }, fallback);
     } catch (_) {
       fallback();
     }
@@ -43,7 +49,7 @@
       getSelection().removeAllRanges();
       getSelection().addRange(r);
       toast("Selected. Copy it from the menu");
-    }));
+    }, btn));
   });
 
   // --- theme -----------------------------------------------------------

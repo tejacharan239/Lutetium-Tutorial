@@ -10,9 +10,16 @@
     "I photograph with nothing but my phone. It is always with me, it is quiet, and nobody on the street treats it as a camera.",
     "Most of these pictures were made on walks, on the way to somewhere else. I edit on the phone too, and keep it light: exposure, colour, a crop."
   ],
+  "portrait": "portrait.jpg",
   "kit": [
-    ["Phone", "Your phone model"],
-    ["Editing", "Lightroom Mobile, Snapseed"]
+    [
+      "Phone",
+      "Your phone model"
+    ],
+    [
+      "Editing",
+      "Lightroom Mobile, Snapseed"
+    ]
   ],
   "camera_names": {
     "SM-S918B": "Galaxy S23 Ultra"

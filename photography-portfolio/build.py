@@ -47,7 +47,8 @@ META_VERSION = 3
 WIDTHS = (640, 1280, 2048)
 EXTS = {".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif"}
 CAMERA_FILENAME = re.compile(r"^(img|dsc|dscf|pxl|mvimg|photo|image|screenshot|whatsapp image)?[\s_-]*\d", re.I)
-FONTS = "https://fonts.googleapis.com/css2?family=Geist:wght@300..600&family=Geist+Mono:wght@400;500&display=swap"
+FONTS = ("https://fonts.googleapis.com/css2?family=Geist:wght@300..600&family=Geist+Mono:wght@400;500"
+         "&family=Instrument+Serif:ital@0;1&display=swap")
 FAVICON = ("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'>"
            "<rect width='32' height='32' rx='8' fill='#1b2340'/>"
            "<circle cx='16' cy='16' r='7' fill='none' stroke='#edf0f5' stroke-width='2.2'/>"
@@ -283,7 +284,7 @@ def tile(p, eager):
     ar = p["w"] / p["h"]
     small = p["srcs"][min(1, len(p["srcs"]) - 1)][0]
     load = 'fetchpriority="high"' if eager else 'loading="lazy" decoding="async"'
-    detail = " · ".join(x for x in (p["zoom"], p["exposure"]) if x)
+    detail = " · ".join(x for x in (p["when"], p["zoom"]) if x)
     return (
         f'<figure class="tile" data-cat="{e(p["cat"])}" data-tint="{p["tint"]}" '
         f'style="--ar:{ar:.4f};flex-grow:{ar * 100:.1f};view-transition-name:t{p["index"]}">'
@@ -293,23 +294,45 @@ def tile(p, eager):
         f'<img src="img/{small}" srcset="{srcset(p)}" sizes="(max-width: 700px) 92vw, 60vw" '
         f'width="{p["w"]}" height="{p["h"]}" alt="{e(p["alt"])}" {load}></a>'
         f'<figcaption class="cap"><span class="cap-t">{e(p["title"])}</span>'
-        f'<span class="cap-x">{e(detail)}</span></figcaption></figure>')
+        f'<span class="cap-x">{e(detail)}<span class="cap-e">{e(" · " + p["exposure"]) if p["exposure"] else ""}</span></span>'
+        f'</figcaption></figure>')
 
 
-def lens_use(photos):
-    counts = Counter(p["zoom"] for p in photos if p["zoom"])
-    if not counts:
+def stats(photos):
+    """Three plain numbers for the About section."""
+    cats = {p["cat"] for p in photos if p["cat"]}
+    years = sorted(p["taken"][:4] for p in photos if p["taken"])
+    items = [(str(len(photos)), "photographs")]
+    if cats:
+        items.append((str(len(cats)), "subjects" if len(cats) > 1 else "subject"))
+    if years:
+        items.append((years[0], "shooting since"))
+    return "".join(f'<div class="stat"><dd>{e(n)}</dd><dt>{e(label)}</dt></div>' for n, label in items)
+
+
+def portrait(cfg, out_img):
+    """Resize the About portrait into out_img; returns an <img> tag or ''."""
+    rel = cfg.get("portrait")
+    if not rel:
         return ""
-    total = sum(counts.values())
-    order = sorted(counts, key=lambda z: float(z.rstrip("×")))
-    segs = "".join(f'<span class="seg" style="--n:{counts[z]};--k:{i}"></span>' for i, z in enumerate(order))
-    legend = "".join(f'<li style="--k:{i}"><b>{e(z)}</b> {counts[z]}</li>' for i, z in enumerate(order))
-    label = ", ".join(f"{z} lens: {counts[z]} of {total}" for z in order)
-    return (f'<div class="row"><dt>Lenses</dt><dd><span class="lensbar" role="img" aria-label="{e(label)}">'
-            f'{segs}</span><ul class="legend" aria-hidden="true">{legend}</ul></dd></div>')
+    src = HERE / rel
+    if not src.exists():
+        warn(f"site.json names portrait {rel}, but there is no such file.")
+        return ""
+    im = ImageOps.exif_transpose(Image.open(src)).convert("RGB")
+    w, h = im.size
+    srcs = []
+    for width in sorted({min(x, w) for x in (480, 960)}):
+        name = f"portrait-{width}.webp"
+        small = im.resize((width, round(h * width / w)), Image.Resampling.LANCZOS)
+        small.info = {}
+        small.save(out_img / name, "WEBP", quality=84)
+        srcs.append(f"img/{name} {width}w")
+    return (f'<img src="{srcs[0].split()[0]}" srcset="{", ".join(srcs)}" sizes="(max-width: 860px) 60vw, 320px" '
+            f'width="{w}" height="{h}" alt="{e(cfg.get("name", ""))}" loading="lazy" decoding="async">')
 
 
-def page(cfg, photos, sample_mode, preview):
+def page(cfg, photos, sample_mode, preview, out_img):
     for i, p in enumerate(photos):
         p["index"] = i
     name = cfg["name"]
@@ -328,18 +351,19 @@ def page(cfg, photos, sample_mode, preview):
 
     meta_line = " · ".join(x for x in (cfg.get("tagline", ""), cfg.get("location", "")) if x)
     about = "".join(f"<p>{e(x)}</p>" for x in cfg.get("about", []))
-    kit = "".join(f'<div class="row"><dt>{e(k)}</dt><dd>{e(v)}</dd></div>' for k, v in cfg.get("kit", []))
-    kit += lens_use(photos)
+    kit = "".join(f'<li title="{e(k)}">{e(item.strip())}</li>'
+                  for k, v in cfg.get("kit", []) for item in v.split(","))
+    face = portrait(cfg, out_img)
 
     contact = []
     if cfg.get("email"):
         em = e(cfg["email"])
         contact.append(f'<div class="reach"><a class="big" id="email" href="mailto:{em}">{em}</a>'
-                       f'<button type="button" class="pill" data-copy="{em}" data-copied="Email copied">Copy</button></div>')
+                       f'<button type="button" class="pill" data-copy="{em}" data-copied="Email copied">Copy email</button></div>')
     if cfg.get("instagram"):
         handle = cfg["instagram"].lstrip("@")
-        contact.append(f'<div class="reach"><a class="big" href="https://instagram.com/{e(urllib.parse.quote(handle))}" '
-                       f'rel="me noopener" target="_blank">@{e(handle)}</a><span class="where">Instagram</span></div>')
+        contact.append(f'<div class="reach"><a class="pill" href="https://instagram.com/{e(urllib.parse.quote(handle))}" '
+                       f'rel="me noopener" target="_blank">Instagram @{e(handle)}</a></div>')
 
     data = [{k: p[k] for k in ("id", "title", "alt", "caption", "catLabel", "camera", "zoom", "exposure",
                                "when", "colour", "tint", "palette", "w", "h")}
@@ -376,16 +400,21 @@ def page(cfg, photos, sample_mode, preview):
     <div class="grid" id="grid">{"".join(tile(p, p["index"] < 3) for p in photos)}</div>
   </section>
   <section class="about split" id="about" aria-labelledby="about-h">
-    <h2 id="about-h">About</h2>
+    <div class="side">
+      <h2 id="about-h">About</h2>
+      {f'<figure class="portrait">{face}</figure>' if face else ""}
+    </div>
     <div>
       <div class="prose">{about}</div>
-      <dl class="kit">{kit}</dl>
+      <dl class="stats">{stats(photos)}</dl>
+      {f'<p class="label">In my pocket</p><ul class="kit">{kit}</ul>' if kit else ""}
     </div>
   </section>
   <section class="contact split" id="contact" aria-labelledby="contact-h">
     <h2 id="contact-h">Contact</h2>
     <div>
-      <p class="lead">For prints, licensing or a collaboration.</p>
+      <p class="signoff">Let’s make <em>something.</em></p>
+      <p class="lead">For prints, licensing or a collaboration, write to me.</p>
       {"".join(contact)}
     </div>
   </section>
@@ -500,7 +529,7 @@ def main():
     with tempfile.TemporaryDirectory() as tmp:
         photos, sample_mode = load_photos(cfg, out / "img", args.samples, tmp)
 
-    (out / "index.html").write_text(page(cfg, photos, sample_mode, args.preview))
+    (out / "index.html").write_text(page(cfg, photos, sample_mode, args.preview, out / "img"))
     if not args.preview:
         (out / "404.html").write_text(not_found(cfg))
         url = cfg.get("url", "").rstrip("/")
