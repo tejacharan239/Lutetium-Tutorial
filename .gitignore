@@ -2,3 +2,6 @@
 *.mp4
 __pycache__/
 *.pyc
+# portfolio build output and image cache: regenerate with portfolio/build.py
+_site/
+portfolio/.cache/
