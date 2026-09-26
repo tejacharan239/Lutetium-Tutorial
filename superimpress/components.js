@@ -5,18 +5,19 @@
 const { h, css, piece, svg, put, seg, lerp, E, setText, setAttr, f } = SP;
 
 /* Fictional employers for the mock interface. None of them is a real company, so the
-   promo never implies that a real employer lists with, or endorses, SuperImpress. */
+   promo never implies that a real employer lists with, or endorses, SuperImpress.
+   Their colours stay inside the brand's blues and inks. */
 const CO = {
-  kitebird: { name: 'Kitebird', color: '#EE6F4E', mark: 'kite',  role: 'Product Designer',     where: 'Remote · Europe' },
-  quillon:  { name: 'Quillon',  color: '#8A72DC', mark: 'quill', role: 'Senior UX Researcher', where: 'Remote' },
-  harborly: { name: 'Harborly', color: '#3D57A6', mark: 'sun',   role: 'Frontend Engineer',    where: 'Berlin · On-site' },
-  fernwood: { name: 'Fernwood', color: '#2F9B70', mark: 'leaf',  role: 'Data Analyst',         where: 'London · Hybrid' },
-  tallwave: { name: 'Tallwave', color: '#F0AE2A', mark: 'wave',  role: 'Growth Marketer',      where: 'Amsterdam' },
-  oakmint:  { name: 'Oakmint',  color: '#2B9DB3', mark: 'ring',  role: 'Staff Engineer',       where: 'Toronto · Hybrid' },
+  kitebird: { name: 'Kitebird', color: '#2A4DB5', mark: 'kite',  role: 'Product Designer',     where: 'Remote · Europe' },
+  quillon:  { name: 'Quillon',  color: '#13161D', mark: 'quill', role: 'Senior UX Researcher', where: 'Remote' },
+  harborly: { name: 'Harborly', color: '#6C8BE4', mark: 'sun',   role: 'Frontend Engineer',    where: 'Berlin · On-site' },
+  fernwood: { name: 'Fernwood', color: '#454C60', mark: 'leaf',  role: 'Data Analyst',         where: 'London · Hybrid' },
+  tallwave: { name: 'Tallwave', color: '#8EA8EE', mark: 'wave',  role: 'Growth Marketer',      where: 'Amsterdam' },
+  oakmint:  { name: 'Oakmint',  color: '#3E68D8', mark: 'ring',  role: 'Staff Engineer',       where: 'Toronto · Hybrid' },
 };
 
 function markSVG(kind, fill) {
-  const F = fill || '#FCFAF4', S = 'rgba(30,20,40,.16)';
+  const F = fill || '#FCFCFE', S = 'rgba(19,22,29,.18)';
   switch (kind) {
     case 'kite':  return '<path d="M50 13 L79 45 L50 87 L21 45 Z" fill="' + F + '"/><path d="M50 13 L50 87 M21 45 L79 45" stroke="' + S + '" stroke-width="4"/>';
     case 'quill': return '<path d="M27 80 C33 52 52 30 80 19 C76 45 57 67 27 80 Z" fill="' + F + '"/><path d="M22 86 L58 44" stroke="' + S + '" stroke-width="4" stroke-linecap="round"/>';
@@ -52,22 +53,22 @@ function jobCard(parent, co, o) {
   [[128, 330], [154, 262], [180, 298]].forEach(([y, w]) => css(h('div', 'bar', el), { left: 28, top: y, width: w }));
   if (o.posted) {
     const c = h('div', 'chip', el);
-    css(c, { left: 28, top: 214, height: 38, padding: '0 16px', fontSize: 17, backgroundColor: '#FBE9B9', color: '#6D5418', transform: 'none' });
-    c.innerHTML = '<svg width="18" height="18" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="none" stroke="#6D5418" stroke-width="2.2"/><path d="M10 5.5 V10 L13 12" fill="none" stroke="#6D5418" stroke-width="2.2" stroke-linecap="round"/></svg>' + o.posted;
+    css(c, { left: 28, top: 214, height: 38, padding: '0 16px', fontSize: 17, backgroundColor: '#E3EAFB', color: '#2D51B8', transform: 'none' });
+    c.innerHTML = '<svg width="18" height="18" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="none" stroke="#2D51B8" stroke-width="2.2"/><path d="M10 5.5 V10 L13 12" fill="none" stroke="#2D51B8" stroke-width="2.2" stroke-linecap="round"/></svg>' + o.posted;
   }
   let btn = null;
   if (o.apply) {
     btn = h('div', 'pp', el);
     css(btn, { left: 28, top: 262, width: o.w - 56, height: 56, borderRadius: 14, backgroundColor: 'var(--ink)', color: '#FCFAF4',
                fontFamily: 'var(--f-ui)', fontWeight: 700, fontSize: 21, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', transformOrigin: '50% 50%' });
-    btn.innerHTML = 'Apply on ' + co.name + '’s site <svg width="18" height="18" viewBox="0 0 20 20"><path d="M6 14 L14 6 M7 6 H14 V13" fill="none" stroke="#FCFAF4" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    btn.innerHTML = 'Apply on ' + co.name + '’s site <svg width="18" height="18" viewBox="0 0 20 20"><path d="M6 14 L14 6 M7 6 H14 V13" fill="none" stroke="#FCFCFE" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   }
   let dial = null;
   if (o.dial) {
     const r = 30, c = 2 * Math.PI * r;
-    const d = svg(el, 84, 84, '<circle cx="42" cy="42" r="' + r + '" fill="#FCFAF4" stroke="#ECE5D6" stroke-width="9"/>' +
+    const d = svg(el, 84, 84, '<circle cx="42" cy="42" r="' + r + '" fill="#FCFCFE" stroke="#E6EAF3" stroke-width="9"/>' +
       '<circle class="arc" cx="42" cy="42" r="' + r + '" fill="none" stroke="' + o.dial + '" stroke-width="9" stroke-linecap="round" transform="rotate(-90 42 42)" stroke-dasharray="' + f(c) + '" stroke-dashoffset="' + f(c) + '"/>' +
-      '<text x="42" y="51" text-anchor="middle" font-family="DM Sans" font-weight="800" font-size="25" fill="#1F2542">0</text>');
+      '<text x="42" y="51" text-anchor="middle" font-family="Inter" font-weight="800" font-size="25" fill="#13161D">0</text>');
     css(d, { left: o.w - 104, top: 178, marginLeft: 0, marginTop: 0 });
     dial = { el: d, arc: d.querySelector('.arc'), txt: d.querySelector('text'), c };
   }
@@ -85,7 +86,7 @@ function jobRow(parent, co, ago) {
   const t = h('div', 't', el, co.role); css(t, { left: 90, top: 20, fontSize: co.role.length > 17 ? 19 : 21 });
   const s = h('div', 's', el, co.name); css(s, { left: 90, top: 51, fontSize: 16 });
   const c = h('div', 'chip', el, ago);
-  css(c, { right: 16, left: 'auto', top: 52, height: 28, padding: '0 11px', fontSize: 14, backgroundColor: '#FBE9B9', color: '#6D5418' });
+  css(c, { right: 16, left: 'auto', top: 52, height: 28, padding: '0 11px', fontSize: 14, backgroundColor: '#E3EAFB', color: '#2D51B8' });
   return el;
 }
 
@@ -93,7 +94,7 @@ function jobRow(parent, co, ago) {
 function browser(parent, w, h_, title) {
   const el = piece(parent, w, h_, 'var(--paper)', 'win');
   h('div', 'bar0', el);
-  ['#F08A6E', '#F3C35B', '#7CC49A'].forEach((c, i) => css(h('div', 'dot', el), { left: 24 + i * 24, backgroundColor: c }));
+  ['#C9D2E6', '#C9D2E6', '#C9D2E6'].forEach((c, i) => css(h('div', 'dot', el), { left: 24 + i * 24, backgroundColor: c }));
   const url = h('div', 'url', el, title); css(url, { left: 110 });
   const body = h('div', 'abs', el); css(body, { left: 0, top: 58, width: w, height: h_ - 58 });
   return { el, url, body };
@@ -102,7 +103,7 @@ function browser(parent, w, h_, title) {
 /* The pointer, cut from paper: its origin is the tip. */
 function cursor(parent) {
   const el = svg(parent, 56, 68,
-    '<path d="M9 5 L9 52 L21 41 L30 60 L39 56 L30 37 L47 37 Z" fill="#FCFAF4" stroke="#1F2542" stroke-width="4" stroke-linejoin="round"/>', [9 / 56, 5 / 68]);
+    '<path d="M9 5 L9 52 L21 41 L30 60 L39 56 L30 37 L47 37 Z" fill="#FCFCFE" stroke="#13161D" stroke-width="4" stroke-linejoin="round"/>', [9 / 56, 5 / 68]);
   return el;
 }
 /* Where the pointer is at t, moving through [t, x, y] keys in slight arcs, as a hand does. */
@@ -128,7 +129,7 @@ function pressAt(t, clicks) {
 function pointer(parent, keys, clicks, show) {
   const rings = clicks.map(() => {
     const r = h('div', 'abs', parent);
-    css(r, { width: 70, height: 70, marginLeft: -35, marginTop: -35, borderRadius: '50%', border: '5px solid var(--ver)', boxSizing: 'border-box' });
+    css(r, { width: 70, height: 70, marginLeft: -35, marginTop: -35, borderRadius: '50%', border: '5px solid var(--blue)', boxSizing: 'border-box' });
     return r;
   });
   const el = cursor(parent);
@@ -148,7 +149,7 @@ function pointer(parent, keys, clicks, show) {
 
 /* A paper plane pointing right; origin at its centre of gravity. */
 function plane(parent, c) {
-  c = c || ['#FCFAF4', '#E4DACA', '#CDBFA8'];
+  c = c || ['#FCFCFE', '#DCE2EE', '#BFC8DA'];
   return svg(parent, 124, 72,
     '<polygon points="4,24 122,33 42,41" fill="' + c[0] + '"/>' +
     '<polygon points="42,41 122,33 30,64" fill="' + c[1] + '"/>' +
@@ -156,7 +157,7 @@ function plane(parent, c) {
 }
 /* A flight along a cubic Bezier with a dashed pencil trail behind it. */
 function flight(parent, pts, color) {
-  const trail = svg(parent, 1920, 1080, '<path d="" fill="none" stroke="' + (color || 'rgba(31,37,66,.45)') + '" stroke-width="3.2" stroke-dasharray="3 13" stroke-linecap="round"/>', [0, 0]);
+  const trail = svg(parent, 1920, 1080, '<path d="" fill="none" stroke="' + (color || 'rgba(19,22,29,.42)') + '" stroke-width="3.2" stroke-dasharray="3 13" stroke-linecap="round"/>', [0, 0]);
   const path = trail.querySelector('path');
   return {
     trail, path,
@@ -217,5 +218,36 @@ function confetti(parent, n, seed, colors) {
   };
 }
 
-Object.assign(SP, { CO, logo, anchor, centred, jobCard, setDial, jobRow, browser, pointer, along, plane, flight, stampMark, scribble, confetti, markSVG });
+/* The SuperImpress lockup, cut from paper: a black paper frame, a blue paper square laid
+   over its corner, and the two-line wordmark printed beside them. Units are the pixels of
+   the reference logo (the lockup is 843 x 245); place and scale it with put(). Geometry
+   and type were fitted to the supplied logo: Inter at weight 850 with its serifed
+   capital I, tracked -0.02em, the I kerned in to the m. */
+function rrect(x, y, w, h_, r) {
+  return 'M' + (x + r) + ',' + y + ' H' + (x + w - r) + ' A' + r + ',' + r + ' 0 0 1 ' + (x + w) + ',' + (y + r) +
+         ' V' + (y + h_ - r) + ' A' + r + ',' + r + ' 0 0 1 ' + (x + w - r) + ',' + (y + h_) + ' H' + (x + r) +
+         ' A' + r + ',' + r + ' 0 0 1 ' + x + ',' + (y + h_ - r) + ' V' + (y + r) + ' A' + r + ',' + r + ' 0 0 1 ' + (x + r) + ',' + y + ' Z';
+}
+function brandMark(parent) {
+  const frame = svg(parent, 168, 168, '<path fill-rule="evenodd" fill="#13161D" d="' + rrect(0, 0, 168, 168, 42) + ' ' + rrect(21, 21, 126, 126, 23) + '"/>');
+  const square = piece(parent, 147, 147, 'var(--blue)');
+  square.style.borderRadius = '32px';
+  return { frame, square, F: [84, 84], Q: [152.5, 152.5] };       // centres, in lockup units
+}
+function lockup(parent) {
+  const box = h('div', 'abs', parent);
+  css(box, { width: 843, height: 245, marginLeft: -421.5, marginTop: -122.5, transformOrigin: '50% 50%' });
+  const mark = brandMark(box);
+  // each line rises out of its own mask; the mask leaves room for the p's descender
+  const line = (html, left, capTop, color) => {
+    const m = h('div', 'abs', box);
+    css(m, { left: left - 8, top: capTop - 17.2 - 8, padding: '8px 12px 30px 8px', overflow: 'hidden' });
+    const t = h('div', 'wmk', m); t.innerHTML = html; t.style.color = color;
+    return t;
+  };
+  const words = [line('Super', 330, 11, 'var(--ink)'), line('<span style="margin-right:-.05em">I</span>mpress', 332, 130, 'var(--blue)')];
+  return { box, mark, words };
+}
+
+Object.assign(SP, { CO, logo, lockup, brandMark, rrect, anchor, centred, jobCard, setDial, jobRow, browser, pointer, along, plane, flight, stampMark, scribble, confetti, markSVG });
 })();

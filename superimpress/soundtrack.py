@@ -9,9 +9,10 @@ window.EVENTS) rather than being re-typed here.
     python3 soundtrack.py build/timeline.json build/soundtrack.wav
 
 The score runs at 120 BPM in D major, so every sheet of paper lands on a beat:
-a muted, ticking intro while job cards pile up; a breath as the stamp comes down and
-the groove dropping in with it; a lighter breakdown under Autopilot; a build back into
-the end card, which resolves on D.
+a muted, ticking intro while job cards pile up; a breath as the logo's black frame
+drops, and the groove dropping in with its blue square; a lighter breakdown under
+Autopilot; a build back into the end card, which resolves on D as "Start free" is
+clicked.
 """
 import importlib.util, json, math, os, sys
 import numpy as np
@@ -182,31 +183,39 @@ INTRO = ['Bm', 'G', 'A']
 PROG = ['D', 'A', 'Bm', 'G']
 PENTA = [74, 76, 78, 81, 83, 86, 88, 90]            # D major pentatonic, for tuned pops
 
-def chord_at(bar):
-    return INTRO[bar] if bar < 3 else PROG[(bar - 3) % 4]
+# The film's cues. Bars start on odd seconds, so each of these is a downbeat.
+T0 = 1.0          # bar 0 starts here; the intro fills bars -1..1
+DROP = 5.0        # the logo's blue square lands and the groove drops in
+BREAK = 29.0      # Autopilot: a lighter breakdown, building from 33 s
+CTA = 35.0        # the end card lands and the groove returns
+FINAL = 37.0      # "Start free" is clicked on the last chord
+
+def chord_at(b):
+    return INTRO[b + 1] if b < 2 else PROG[(b - 2) % 4]
 
 def compose(total):
     m = Bus(total + 4)
-    nbars = int(math.ceil(total / BAR))
-    for b in range(nbars):
-        t0 = b * BAR; ch = chord_at(b); arp = [x + 12 for x in CH[ch]] + [CH[ch][0] + 24]
-        intro, brk, final = t0 < 6 - 1e-6, 42 <= t0 < 50 - 1e-6, t0 >= 54 - 1e-6
-        if final: break
+    for b in range(-1, int(math.ceil((total - T0) / BAR))):
+        t0 = T0 + b * BAR; ch = chord_at(b); arp = [x + 12 for x in CH[ch]] + [CH[ch][0] + 24]
+        intro, brk = t0 < DROP - 1e-6, BREAK - 1e-6 <= t0 < CTA - 1e-6
+        if t0 >= FINAL - 1e-6: break
         # pad under everything; thicker under the break
         m.add(pad([hz(x) for x in CH[ch]], BAR + .9, .05 if not brk else .08), t0 - .3)
         if intro:
             # muted plucks on the chord root, opening up as the pile grows; a clock ticking every beat
-            cut = 700 + 1800 * (t0 / 6)
+            cut = 700 + 1800 * max(0.0, t0 + BAR) / (DROP + BAR)
             for k in range(8):
+                tk = t0 + k * BEAT / 2
+                if tk < 0: continue
                 x = marimba(hz(CH[ch][0] + (12 if k % 4 == 2 else 0)), .22 * (1 if k % 2 == 0 else .7))
-                m.add(filt(x, 'lowpass', cut + 300 * k), t0 + k * BEAT / 2, pan=-.2 if k % 2 else .2)
-            for k in range(4): m.add(tick(1500 if k % 2 else 2100), t0 + k * BEAT, .10, .3)
-            if b >= 1: m.add(bass(hz(ROOT[ch] + 12), .16, 1.8), t0)
+                m.add(filt(x, 'lowpass', cut + 300 * k), tk, pan=-.2 if k % 2 else .2)
+            for k in range(4):
+                if t0 + k * BEAT >= 0: m.add(tick(1500 if k % 2 else 2100), t0 + k * BEAT, .10, .3)
+            if b >= 0: m.add(bass(hz(ROOT[ch] + 12), .16, 1.8), t0)
             continue
         # arpeggio, eight to the bar: marimba body, a plucked string on top for sparkle
         for k, idx in enumerate([0, 1, 2, 3, 2, 1, 2, 3]):
             tk = t0 + k * BEAT / 2 + rng.normal(0, .004)
-            if tk < 6.5 - 1e-6: continue                       # the groove drops in with the stamp
             vel = (.2 if k % 2 == 0 else .15) * rng.uniform(.92, 1.06)
             x = marimba(hz(arp[idx]), vel)
             if brk: x = filt(x, 'lowpass', 2200)
@@ -214,34 +223,32 @@ def compose(total):
             if not brk and k % 2 == 0: m.add(pluck(hz(arp[idx] + 12), .07, .8, .6), tk + .002, pan=.35 - .7 * idx / 3)
         # bass: beat 1, the and of 2, beat 3
         for beat, L, v in ((0, 1.1, .42), (1.5, .45, .3), (2, 1.0, .36)):
-            tb = t0 + beat * BEAT
-            if tb >= 6.5 - 1e-6 and not (brk and beat != 0): m.add(bass(hz(ROOT[ch] + 12), v * (.7 if brk else 1), L + .4), tb)
+            if not (brk and beat != 0): m.add(bass(hz(ROOT[ch] + 12), v * (.7 if brk else 1), L + .4), t0 + beat * BEAT)
         # drums
         if not brk:
             for beat in range(4):
                 tb = t0 + beat * BEAT
-                if tb < 6.5 - 1e-6: continue
                 if beat in (0, 2): m.add(kick(.8), tb)
                 if beat in (1, 3): m.add(clap(.42), tb, pan=.05)
                 m.add(hat(.10), tb + BEAT / 2, pan=.25)
-                for s in range(4): m.add(shaker(.05 if s % 2 else .025), tb + s * BEAT / 4, pan=-.35)
-            if b % 4 == 3: m.add(kick(.6), t0 + 3.5 * BEAT)          # a pickup into each phrase
+                for s_ in range(4): m.add(shaker(.05 if s_ % 2 else .025), tb + s_ * BEAT / 4, pan=-.35)
+            if (b - 2) % 4 == 3: m.add(kick(.6), t0 + 3.5 * BEAT)     # a pickup into each phrase
         else:
             for beat in range(4): m.add(hat(.07), t0 + beat * BEAT + BEAT / 2, pan=.25)
-    # the stamp: a breath, then everything lands at once
-    m.add(impact(.9), 6.5); m.add(crash(.35), 6.5, pan=.2)
-    for k, x in enumerate([74, 78, 81, 86]): m.add(pluck(hz(x), .22, 1.8, .7), 6.5 + k * .008, pan=-.2 + .13 * k)
-    for k, x in enumerate([86, 90, 93]): m.add(glock(hz(x), .16), 6.62 + k * .09, pan=.3)
-    m.add(riser(1.5, .5), 4.5)
+    # the logo: a riser, a breath while the frame drops, then everything lands with the blue square
+    m.add(riser(1.5, .5), DROP - 2.0)
+    m.add(impact(.9), DROP); m.add(crash(.35), DROP, pan=.2)
+    for k, x in enumerate([74, 78, 81, 86]): m.add(pluck(hz(x), .22, 1.8, .7), DROP + k * .008, pan=-.2 + .13 * k)
+    for k, x in enumerate([86, 90, 93]): m.add(glock(hz(x), .16), DROP + .12 + k * .09, pan=.3)
     # into the end card: claps roll, the riser climbs, the groove returns on the downbeat
-    m.add(riser(1.9, .45), 48.1)
-    for k in range(12): m.add(clap(.12 + .03 * k), 48.5 + k * (1 / 12) * (1.5 - .5 * k / 12), pan=.05)
-    m.add(crash(.3), 50.0, pan=-.2)
+    m.add(riser(1.9, .45), CTA - 1.9)
+    for k in range(12): m.add(clap(.12 + .03 * k), CTA - 1.5 + k * (1 / 12) * (1.5 - .5 * k / 12), pan=.05)
+    m.add(crash(.3), CTA, pan=-.2)
     # a little tune over the end card
-    for tt, x in ((50.0, 78), (50.5, 81), (51.0, 83), (51.5, 81), (52.0, 79), (52.5, 83), (53.0, 81), (53.5, 78)):
-        m.add(glock(hz(x + 12), .12), tt, pan=.3)
+    for tt, x in ((0, 78), (.5, 81), (1.0, 83), (1.5, 81)):
+        m.add(glock(hz(x + 12), .12), CTA + tt, pan=.3)
     # resolve: a D chord that rings out under the last two seconds
-    tf = 54.0
+    tf = FINAL
     for x in (26, 38): m.add(bass(hz(x), .42, 3.2), tf)
     for k, x in enumerate([62, 66, 69, 74, 78]): m.add(marimba(hz(x), .22, 2.5), tf + k * .06)
     for k, x in enumerate([74, 78, 81, 86]): m.add(pluck(hz(x), .16, 2.2, .6), tf + .01 + k * .05, pan=-.2 + .13 * k)

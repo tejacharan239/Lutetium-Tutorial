@@ -16,9 +16,7 @@
 // Fonts load lazily, so ask for every face the scenes use before building: the builders
 // measure a few words, and the renderer must never capture a frame in a fallback face.
 Promise.all([
-  '620 84px Fraunces', 'italic 480 58px Fraunces', '760 150px Fraunces',
-  '500 36px "DM Sans"', '600 36px "DM Sans"', '700 36px "DM Sans"', '800 36px "DM Sans"',
-  '600 21px "IBM Plex Mono"', '500 21px "IBM Plex Mono"', '700 46px Caveat',
+  '800 80px Inter', '850 126px Inter', '700 46px Inter', '600 34px Inter', '500 34px Inter', '700 46px Caveat',
 ].map(f => document.fonts.load(f))).catch(() => {}).then(() => SP.boot());
 </script>
 </body>

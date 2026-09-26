@@ -5,7 +5,7 @@
 #   ./build.sh                  # 1920x1080, 30 fps -> build/superimpress-promo.mp4
 #   RSCALE=0.5 ./build.sh       # a 960x540 draft of the same cut, much faster
 #   WORKERS=8 ./build.sh        # parallel browsers (default: number of CPUs)
-#   VBR=5M ./build.sh           # delivery video bitrate (default 3.4M: about 25 MB for the film)
+#   VBR=5M ./build.sh           # delivery video bitrate (default 3.4M: about 18 MB for the 39 s film)
 set -euo pipefail
 cd "$(dirname "$0")"
 FF=${FFMPEG:-$(python3 -c 'import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())')}

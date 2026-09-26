@@ -89,16 +89,16 @@ function grainTile(seed) {
     let m = 0;
     for (const [a, n, w] of oct) m += sample(a, n, x, y) * w;
     const v = (m - .5) * 2, i = (y * N + x) * 4, r = R(), tooth = (R() - .5) * 26;
-    if (r < .0025) { d[i] = 70; d[i + 1] = 56; d[i + 2] = 44; d[i + 3] = 40 + R() * 50; continue; }
-    if (r > .997) { d[i] = 255; d[i + 1] = 253; d[i + 2] = 246; d[i + 3] = 50 + R() * 40; continue; }
+    if (r < .0025) { d[i] = 44; d[i + 1] = 50; d[i + 2] = 66; d[i + 3] = 40 + R() * 50; continue; }
+    if (r > .997) { d[i] = 255; d[i + 1] = 255; d[i + 2] = 255; d[i + 3] = 50 + R() * 40; continue; }
     const a = v * 7 + tooth;                              // faint cloud under a fine tooth
-    if (a > 0) { d[i] = 70; d[i + 1] = 56; d[i + 2] = 44; d[i + 3] = clamp(a, 0, 255); }
-    else { d[i] = 255; d[i + 1] = 252; d[i + 2] = 244; d[i + 3] = clamp(-a * 1.1, 0, 255); }
+    if (a > 0) { d[i] = 44; d[i + 1] = 50; d[i + 2] = 66; d[i + 3] = clamp(a, 0, 255); }
+    else { d[i] = 255; d[i + 1] = 255; d[i + 2] = 255; d[i + 3] = clamp(-a * 1.1, 0, 255); }
   }
   g.putImageData(img, 0, 0);
   for (let k = 0; k < 110; k++) {            // fibres, drawn on every wrap so the tile has no seam
     const x = R() * N, y = R() * N, len = 6 + R() * 20, ang = R() * Math.PI * 2, bend = (R() - .5) * 8;
-    g.strokeStyle = R() < .6 ? 'rgba(255,253,246,.15)' : 'rgba(80,62,46,.10)';
+    g.strokeStyle = R() < .6 ? 'rgba(255,255,255,.15)' : 'rgba(50,56,74,.09)';
     g.lineWidth = .5 + R() * .7;
     const x2 = x + Math.cos(ang) * len, y2 = y + Math.sin(ang) * len;
     for (const [ox, oy] of [[0, 0], [N, 0], [-N, 0], [0, N], [0, -N]]) {
@@ -158,7 +158,7 @@ function svg(parent, w, h_, inner, origin, cls) {
 // ------------------------------------------------------------------ light
 /* The key light is up and to the left, so shadows fall down and to the right; the
    higher a piece is lifted off the sheet, the further and softer its shadow falls. */
-const SHC = 'rgba(40,28,36,';
+const SHC = 'rgba(14,20,42,';
 function shadow(z) {
   z = Math.max(0, z);
   return f(.4 + z * .22) + 'px ' + f(.9 + z * .42) + 'px ' + f(1.4 + z * .5) + 'px ' + SHC + (.26 - Math.min(.12, z * .004)).toFixed(3) + '),' +
@@ -192,9 +192,9 @@ function setStyle(e, k, v) { const key = '_s_' + k; if (e[key] !== v) { e.style[
 function setAttr(e, k, v) { const key = '_a_' + k; if (e[key] !== v) { e.setAttribute(k, v); e[key] = v; } }
 /* Dropped onto the desk from above: while high it is larger, displaced away from the
    frame centre, and its shadow is wide and soft; it converges and sharpens as it lands. */
-function drop(t, t0, dur, x, y, r0, r1, extra) {
+function drop(t, t0, dur, x, y, r0, r1, extra, cx, cy) {
   const p = seg(t, t0, t0 + dur, E.inQuad), hgt = 1 - p;
-  const s = 1 + .55 * hgt, dx = (x - 960) * .22 * hgt, dy = (y - 540) * .22 * hgt;
+  const s = 1 + .55 * hgt, dx = (x - (cx == null ? 960 : cx)) * .22 * hgt, dy = (y - (cy == null ? 540 : cy)) * .22 * hgt;
   const k = t - (t0 + dur);
   let bump = 0, rr = lerp(r0, r1, E.outCubic(p));
   if (k > 0) { bump = Math.exp(-k * 16) * Math.sin(k * 44); rr = r1 + .8 * bump; }
@@ -207,7 +207,7 @@ Object.assign(SP, { h, css, piece, svg, put, shadow, dshadow, setText, setStyle,
    `*like this*`, get a strip of coloured paper laid behind them, swept on left to right. */
 class KT {
   constructor(parent, lines, o) {
-    this.o = Object.assign({ stagger: .055, dur: .6, hl: 'var(--butter)', hlAt: .5, hlDur: .4 }, o);
+    this.o = Object.assign({ stagger: .055, dur: .6, hl: 'var(--blueL)', hlAt: .5, hlDur: .4 }, o);
     this.box = h('div', 'kt ' + (o.cls || ''), parent);
     css(this.box, { left: o.x, top: o.y });
     if (o.center) { this.box.classList.add('center'); this.box.style.transform = 'translateX(-50%)'; }
@@ -302,7 +302,7 @@ function tornEdge(S, color) {
   const d = (dy, jit) => 'M0,44 ' + pts.map(p => 'L' + f(p[0]) + ',' + f(p[1] + dy + (jit ? (R() - .5) * 4 : 0))).join(' ') + ' L' + W + ',44 Z';
   const e = h('div', 'torn', S.sheet);
   e.innerHTML = '<svg width="2080" height="44" viewBox="0 0 2080 44" preserveAspectRatio="none">' +
-    '<path d="' + d(-5, true) + '" fill="#FFFDF7"/><path d="' + d(0, false) + '" fill="' + color + '"/></svg>';
+    '<path d="' + d(-5, true) + '" fill="#FFFFFF"/><path d="' + d(0, false) + '" fill="' + color + '"/></svg>';
   S.tornEl = e;
 }
 
