@@ -1,0 +1,88 @@
+/* SuperImpress promo: a cut-paper desk. Colours are paper stocks, not screen colours. */
+:root {
+  --desk: #E6DCC8; --cream: #F7F2E8; --paper: #FCFAF4;
+  --ink: #1F2542; --ink2: #4B5171; --ink3: #8D90A4; --rule: #D9CFBD;
+  --ver: #F2542D; --verD: #CF3E1C; --verL: #FF9A7E;
+  --butter: #FFD36B; --butterL: #FFE8AE;
+  --green: #23935E; --greenL: #CDEEDB;
+  --amber: #E39A2D; --amberL: #FBE3B6;
+  --slate: #7F879C; --slateL: #E1E3EA;
+  --sky: #CFE3F2; --lilac: #E3DCF5; --peach: #F9DCCB; --mint: #A7DDBF;
+  --navy: #242A4B; --navyL: #343B64;
+
+  --f-display: 'Fraunces', Georgia, serif;
+  --f-ui: 'DM Sans', system-ui, sans-serif;
+  --f-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --f-hand: 'Caveat', cursive;
+}
+
+html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #161616; }
+body { -webkit-font-smoothing: antialiased; }
+#stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--desk); }
+#cam { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 50% 50%; }
+
+/* the key light and lens falloff sit over everything, as if the desk were photographed */
+#light { position: absolute; inset: 0; pointer-events: none; z-index: 1000;
+  background:
+    radial-gradient(110% 85% at 18% 8%, rgba(255, 248, 232, .13), rgba(255, 248, 232, 0) 58%),
+    radial-gradient(ellipse 78% 74% at 50% 48%, rgba(20, 14, 26, 0) 60%, rgba(20, 14, 26, .22) 100%); }
+
+/* each scene is a sheet of paper laid on the desk; it bleeds past the frame so camera moves never show an edge */
+.sheet { position: absolute; left: -80px; top: -80px; width: 2080px; height: 1240px;
+  background-color: var(--cream); background-image: var(--grain); transform-origin: 50% 50%; }
+.sheet > .clip { position: absolute; left: 0; top: 0; width: 2080px; height: 1240px; overflow: hidden; transform-origin: 50% 50%; }
+.clip > .ct { position: absolute; left: 80px; top: 80px; width: 1920px; height: 1080px; }
+.torn { position: absolute; left: 0; top: -40px; width: 2080px; height: 44px; }
+
+/* Every moving thing is its own compositor layer, so moving or scaling it never forces
+   the pieces around it to repaint: that halves the cost of a frame in software raster. */
+#cam, .sheet, .clip, .pp, .svgw { will-change: transform; }
+
+/* a piece of paper; positioned by its centre through transform, coloured inline */
+.pp { position: absolute; left: 0; top: 0; border-radius: 8px; background-color: var(--paper); background-image: var(--grain); }
+.abs { position: absolute; left: 0; top: 0; }
+.svgw { position: absolute; left: 0; top: 0; line-height: 0; }
+.svgw svg { overflow: visible; }
+
+/* ------------------------------------------------------------------ type */
+.kt { position: absolute; left: 0; top: 0; white-space: nowrap; }
+.kt .ln { display: block; }
+.kt .w { position: relative; display: inline-block; margin-right: .24em; }
+.kt .w:last-child { margin-right: 0; }
+.kt .wm { position: relative; display: inline-block; overflow: hidden; vertical-align: top;
+  padding: .06em .04em .16em; margin: -.06em -.04em -.16em; }
+.kt .wi { display: inline-block; }
+.kt .hl { position: absolute; left: -.14em; right: -.14em; top: .52em; height: .5em; border-radius: 4px;
+  transform-origin: 0 50%; background-image: var(--grain); }
+.kt.center { text-align: center; }
+
+.h1 { font-family: var(--f-display); font-weight: 620; font-size: 84px; line-height: 1.02; letter-spacing: -.018em;
+  color: var(--ink); font-variation-settings: 'opsz' 144, 'SOFT' 60; }
+.h2 { font-family: var(--f-ui); font-weight: 500; font-size: 36px; line-height: 1.28; color: var(--ink2);
+  letter-spacing: -.005em; font-variation-settings: 'opsz' 32; }
+.tag { position: absolute; left: 0; top: 0; font-family: var(--f-mono); font-weight: 600; font-size: 21px;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--ink2); white-space: nowrap; display: flex; align-items: center; gap: 14px; }
+.tag i { display: block; width: 34px; height: 12px; border-radius: 3px; background-image: var(--grain); }
+.hand { font-family: var(--f-hand); font-weight: 700; color: var(--ink); white-space: nowrap; }
+
+/* ------------------------------------------------------------------ interface pieces */
+.jc { border-radius: 16px; background-color: var(--paper); font-family: var(--f-ui); color: var(--ink); overflow: visible; }
+.jc .t { position: absolute; font-weight: 700; letter-spacing: -.01em; white-space: nowrap; }
+.jc .s { position: absolute; font-weight: 500; color: var(--ink2); white-space: nowrap; }
+.jc .bar { position: absolute; height: 12px; border-radius: 6px; background: #E7E0D2; }
+.chip { position: absolute; left: 0; top: 0; display: flex; align-items: center; gap: 8px; white-space: nowrap;
+  font-family: var(--f-ui); font-weight: 600; border-radius: 999px; background-image: var(--grain); }
+.logo { position: absolute; border-radius: 22%; background-image: var(--grain); overflow: hidden; }
+.logo svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+.stamp { position: absolute; left: 0; top: 0; font-family: var(--f-ui); font-weight: 800; text-transform: uppercase;
+  letter-spacing: .09em; white-space: nowrap; border: 5px solid currentColor; border-radius: 12px; padding: 4px 18px 2px;
+  -webkit-mask-image: var(--inkmask); mask-image: var(--inkmask); -webkit-mask-size: 256px; mask-size: 256px; }
+
+.win { border-radius: 18px; background-color: var(--paper); overflow: hidden; }
+.win .bar0 { position: absolute; left: 0; top: 0; right: 0; height: 58px; background-color: #EFE8DA; background-image: var(--grain); }
+.win .dot { position: absolute; top: 22px; width: 14px; height: 14px; border-radius: 50%; }
+.win .url { position: absolute; top: 13px; height: 32px; border-radius: 16px; background: var(--paper);
+  font-family: var(--f-mono); font-size: 17px; font-weight: 500; line-height: 32px; color: var(--ink2); padding: 0 16px; white-space: nowrap; }
+
+.mono { font-family: var(--f-mono); }

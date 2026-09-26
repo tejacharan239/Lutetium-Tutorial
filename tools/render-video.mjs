@@ -6,15 +6,20 @@
 // the encoded segments joined losslessly. The result is identical to a single pass.
 //
 //   node render-video.mjs <composition.html> <out.mp4> [workers]
+//
+// FPS (default 24), RW/RH (viewport, default 1920x1080), RSCALE (device scale factor,
+// default 1; 0.5 renders a half-size draft of the same layout) and CRF (default 20; lower
+// it to render a mezzanine for a later delivery encode) come from the environment.
 import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
 import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const FPS = 24, W = +(process.env.RW || 1920), H = +(process.env.RH || 1080);
+const FPS = +(process.env.FPS || 24), W = +(process.env.RW || 1920), H = +(process.env.RH || 1080);
+const DSF = +(process.env.RSCALE || 1);
 const FF = process.env.FFMPEG || '/usr/local/lib/python3.11/dist-packages/imageio_ffmpeg/binaries/ffmpeg-linux-x86_64-v7.0.2';
-const ENC = ['-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-pix_fmt', 'yuv420p', '-r', String(FPS)];
+const ENC = ['-c:v', 'libx264', '-preset', 'medium', '-crf', process.env.CRF || '20', '-pix_fmt', 'yuv420p', '-r', String(FPS)];
 const args = process.argv.slice(2);
 
 function run(cmd, a, opts = {}) {
@@ -25,9 +30,9 @@ function run(cmd, a, opts = {}) {
 }
 
 async function openPage(page) {
-  const b = await chromium.launch({ args: ['--hide-scrollbars', '--force-device-scale-factor=1', '--disable-lcd-text',
+  const b = await chromium.launch({ args: ['--hide-scrollbars', '--force-device-scale-factor=' + DSF, '--disable-lcd-text',
                                             '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
-  const p = await (await b.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 1 })).newPage();
+  const p = await (await b.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: DSF })).newPage();
   p.on('pageerror', e => console.error('PAGEERR', String(e)));
   await p.goto(/^https?:/.test(page) ? page : 'file://' + path.resolve(page));
   await p.waitForFunction(() => window.seek && window.READY !== false, { timeout: 120000 });

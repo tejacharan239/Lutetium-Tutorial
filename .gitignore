@@ -2,3 +2,6 @@
 *.mp4
 __pycache__/
 *.pyc
+
+# the promo's fonts, timeline, audio and video: regenerate with superimpress/build.sh
+superimpress/build/
